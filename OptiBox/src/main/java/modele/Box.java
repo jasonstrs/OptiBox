@@ -31,13 +31,23 @@ public class Box extends Objet_d_Instance implements Serializable {
     )
     private float prix;
 
+    public Box(){
+        this.prix=0;
+    }
+    
+    public Box(float prix){
+        this.prix=prix;
+    }
+    
     public float getPrix() {
         return prix;
     }
 
     public void setPrix(float prix) {
-        this.prix = prix;
-    }
+        if(prix>0){
+            this.prix = prix;
+        }
+    }    
     
     
     

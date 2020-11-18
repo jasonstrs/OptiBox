@@ -42,7 +42,23 @@ public class Objet_d_Instance implements Serializable {
     @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     @JoinColumn(name="idInstance")
     protected Long idInstance;
+ 
+    public void Object_d_Instance(){
+        this.idInstance=0;
+        this.id=0;
+        this.Hauteur=0;
+        this.Largeur=0;
+    }
     
+    public void Object_d_Instance(Long idInstance, String id, int Largeur, int Hauteur){
+        if(Hauteur>0 && Largeur>0){
+            this.idInstance=idInstance;
+            this.id=id;
+            this.Hauteur=Hauteur;
+            this.Largeur=Largeur;
+        }
+    }
+
     public String getId() {
         return id;
     }
@@ -56,7 +72,9 @@ public class Objet_d_Instance implements Serializable {
     }
 
     public void setHauteur(int Hauteur) {
-        this.Hauteur = Hauteur;
+        if(Hauteur>0){
+            this.Hauteur = Hauteur;
+        }
     }
 
     public int getLargeur() {
@@ -64,7 +82,9 @@ public class Objet_d_Instance implements Serializable {
     }
 
     public void setLargeur(int Largeur) {
-        this.Largeur = Largeur;
+        if(Largeur>0){
+            this.Largeur = Largeur;
+        }
     }
 
     public Long getIdInstance() {

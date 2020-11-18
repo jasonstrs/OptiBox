@@ -28,12 +28,24 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
     )
     private int quantite;
 
+    public Produit(){
+        this.quantite=0;
+    }
+    
+    public Produit(int quantite){
+        if(quantite>=0){
+            this.quantite = quantite;
+        }
+    }
+    
     public int getQuantite() {
         return quantite;
     }
 
     public void setQuantite(int quantite) {
-        this.quantite = quantite;
+        if(quantite>=0){
+            this.quantite = quantite;
+        }
     }
     
     

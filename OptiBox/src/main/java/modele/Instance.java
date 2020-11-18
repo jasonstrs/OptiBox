@@ -38,7 +38,16 @@ public class Instance implements Serializable {
         nullable=false
     )
     private String nom;
+       
+    public Instance(){
+        this.id=0; //a modifier?
+        this.nom="Nom_Par_Défaut";
+    }
     
+    public Instance(String nom, Long id){
+        this.id=id; 
+        this.nom=nom;
+    }
     
     public Long getId() {
         return id;
