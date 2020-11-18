@@ -43,21 +43,22 @@ public class Objet_d_Instance implements Serializable {
     @JoinColumn(name="idInstance")
     protected Long idInstance;
  
-    public void Object_d_Instance(){
-        this.idInstance=0;
-        this.id=0;
+    public Objet_d_Instance(){
+        this.idInstance= new Long(0);
+        this.id= "";
         this.Hauteur=0;
         this.Largeur=0;
     }
     
-    public void Object_d_Instance(Long idInstance, String id, int Largeur, int Hauteur){
+    public Objet_d_Instance(String id, int Largeur, int Hauteur){
+        this();
         if(Hauteur>0 && Largeur>0){
-            this.idInstance=idInstance;
             this.id=id;
             this.Hauteur=Hauteur;
             this.Largeur=Largeur;
         }
     }
+
 
     public String getId() {
         return id;
@@ -117,5 +118,11 @@ public class Objet_d_Instance implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Objet_d_Instance{" + "id=" + id + ", Hauteur=" + Hauteur + ", Largeur=" + Largeur + ", idInstance=" + idInstance + '}';
+    }
+
+    
     
 }

@@ -7,6 +7,7 @@ package modele;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,12 +41,13 @@ public class Instance implements Serializable {
     private String nom;
        
     public Instance(){
-        this.id=0; //a modifier?
+        this.id= new Long(0);
         this.nom="Nom_Par_Défaut";
+        this.ObjetsDeLInstance = new HashSet<modele.Objet_d_Instance>();
     }
     
-    public Instance(String nom, Long id){
-        this.id=id; 
+    public Instance(String nom){
+        this();
         this.nom=nom;
     }
     
@@ -77,9 +79,15 @@ public class Instance implements Serializable {
         return true;
     }
 
+//    @Override
+//    public String toString() {
+//        return "modele.Instance[ id=" + id + " ]";
+//    }
+
     @Override
     public String toString() {
-        return "modele.Instance[ id=" + id + " ]";
+        return "Instance{" + "id=" + id + ", ObjetsDeLInstance=" + ObjetsDeLInstance + ", nom=" + nom + '}';
     }
+    
     
 }

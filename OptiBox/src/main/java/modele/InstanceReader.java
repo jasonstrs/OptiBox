@@ -68,7 +68,7 @@ public class InstanceReader {
      * @throws ReaderException lorsque les donnees dans le fichier d'instance 
      * sont manquantes ou au mauvais format.
      */
-    public void readInstance() throws ReaderException {
+    public Instance readInstance() throws ReaderException {
         Scanner scanner = null;
         try {
             scanner = new Scanner(instanceFile);
@@ -81,7 +81,7 @@ public class InstanceReader {
         // TODO : Vous pouvez creer une instance.
         ////////////////////////////////////////////
         
-        Instance i = new Instance();
+        Instance i = new Instance(nom);
         
         readStringInLine(scanner, HEADER_BOX);
         // Dans la boucle qui suit, nous allons lire les donnees relatives a chaque box.
@@ -103,7 +103,6 @@ public class InstanceReader {
             ////////////////////////////////////////////
             
             Box b = new Box(elem.getIdentifiant(),elem.getLongueur(),elem.getHauteur(),elem.getPrix());
-//            b.setIdInstance(i.getId());
             i.ObjetsDeLInstance.add(b);
             
         }
@@ -130,6 +129,7 @@ public class InstanceReader {
 //            b.setIdInstance(i.getId());
             i.ObjetsDeLInstance.add(p);
         }
+        return i;
     }
 
     /**
@@ -384,9 +384,13 @@ public class InstanceReader {
      */
     public static void main(String[] args) {
         try {
-            InstanceReader reader = new InstanceReader("instance_test.csv");
-            reader.readInstance();
+//            String userDirectory = new File("").getAbsolutePath();
+//            System.out.println("Le répertoire actuel est : "+userDirectory);
+            InstanceReader reader = new InstanceReader("instances\\instance_test.csv");
+            Instance i = reader.readInstance();
             System.out.println("Instance lue avec success !");
+            System.out.println(i);
+            
         } catch (ReaderException ex) {
             System.out.println(ex.getMessage());
         }

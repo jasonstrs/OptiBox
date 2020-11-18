@@ -32,10 +32,12 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         this.quantite=0;
     }
     
-    public Produit(int quantite){
-        if(quantite>=0){
-            this.quantite = quantite;
-        }
+    public Produit(String id,int l,int h,int quantite){
+        super(id,l,h);
+        if(quantite>=0)
+            this.quantite = quantite;        
+        else
+            this.quantite = 0;
     }
     
     public int getQuantite() {
@@ -72,7 +74,9 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
 
     @Override
     public String toString() {
-        return "modele.Produit[ id=" + id + " ]";
+        return "Produit{"+ super.toString() + "quantite=" + quantite + '}';
     }
+
+
     
 }

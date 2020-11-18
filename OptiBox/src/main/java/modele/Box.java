@@ -29,17 +29,21 @@ public class Box extends Objet_d_Instance implements Serializable {
         name="prix",
         nullable=false
     )
-    private float prix;
+    private double prix;
 
     public Box(){
-        this.prix=0;
+        this.prix=100;
     }
     
-    public Box(float prix){
-        this.prix=prix;
+    public Box(String id,int l,int h,double prix){
+        super(id,l,h);
+        if(prix>0)
+            this.prix=prix;
+        else
+            this.prix=100;
     }
     
-    public float getPrix() {
+    public double getPrix() {
         return prix;
     }
 
@@ -70,5 +74,12 @@ public class Box extends Objet_d_Instance implements Serializable {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Box{" + super.toString() + " prix=" + prix + '}';
+    }
+    
+    
     
 }
