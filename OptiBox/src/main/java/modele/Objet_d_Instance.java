@@ -25,6 +25,12 @@ public class Objet_d_Instance implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected int idGenere;
+    
+    @Column(
+            name="IDOBJET",
+            nullable=false
+    )
     protected String id;
     
     @Column(
@@ -40,11 +46,10 @@ public class Objet_d_Instance implements Serializable {
     protected int Largeur;   
 
     @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
-    @JoinColumn(name="idInstance")
-    protected Long idInstance;
+    @JoinColumn(name="monInstance")
+    protected Instance monInstance = null;
  
     public Objet_d_Instance(){
-        this.idInstance= new Long(0);
         this.id= "";
         this.Hauteur=0;
         this.Largeur=0;
@@ -59,14 +64,13 @@ public class Objet_d_Instance implements Serializable {
         }
     }
 
-
-    public String getId() {
-        return id;
+    public int getIdGenere() {
+        return idGenere;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setIdGenere(int idGenere) {
+        this.idGenere = idGenere;
+    }    
 
     public int getHauteur() {
         return Hauteur;
@@ -88,14 +92,15 @@ public class Objet_d_Instance implements Serializable {
         }
     }
 
-    public Long getIdInstance() {
-        return idInstance;
+    public Instance getMonInstance() {
+        return monInstance;
     }
 
-    public void setIdInstance(Long idInstance) {
-        this.idInstance = idInstance;
+    public void setMonInstance(Instance monInstance) {
+        this.monInstance = monInstance;
     }
-    
+
+
     
 
     @Override
@@ -118,10 +123,10 @@ public class Objet_d_Instance implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Objet_d_Instance{" + "id=" + id + ", Hauteur=" + Hauteur + ", Largeur=" + Largeur + ", idInstance=" + idInstance + '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Objet_d_Instance{" + "id=" + id + ", Hauteur=" + Hauteur + ", Largeur=" + Largeur + ", idInstance=" + idInstance + '}';
+//    }
 
     
     

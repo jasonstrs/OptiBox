@@ -23,8 +23,7 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
 
     @Column
     (
-        name="quantite",
-        nullable=false
+        name="quantite"
     )
     private int quantite;
 
@@ -35,9 +34,10 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
     public Produit(String id,int l,int h,int quantite){
         super(id,l,h);
         if(quantite>=0)
-            this.quantite = quantite;        
-        else
-            this.quantite = 0;
+            this.quantite = quantite; 
+        else{
+            quantite=0;
+        }
     }
     
     public int getQuantite() {
@@ -72,10 +72,10 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Produit{"+ super.toString() + "quantite=" + quantite + '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Produit{"+ super.toString() + "quantite=" + quantite + '}';
+//    }
 
 
     

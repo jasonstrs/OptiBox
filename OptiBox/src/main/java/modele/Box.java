@@ -26,8 +26,7 @@ public class Box extends Objet_d_Instance implements Serializable {
     
     @Column
     (
-        name="prix",
-        nullable=false
+        name="prix"
     )
     private double prix;
 
@@ -35,6 +34,13 @@ public class Box extends Objet_d_Instance implements Serializable {
         this.prix=100;
     }
     
+    /**
+     * Constructeur par données
+     * @param id Identifiant de la box
+     * @param l Longueur
+     * @param h Hauteur
+     * @param prix Prix
+     */
     public Box(String id,int l,int h,double prix){
         super(id,l,h);
         if(prix>0)
@@ -75,11 +81,11 @@ public class Box extends Objet_d_Instance implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Box{" + super.toString() + " prix=" + prix + '}';
-    }
-    
+//    @Override
+//    public String toString() {
+//        return "Box{" + super.toString() + " prix=" + prix + '}';
+//    }
+//    
     
     
 }

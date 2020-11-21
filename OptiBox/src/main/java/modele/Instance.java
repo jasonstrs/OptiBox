@@ -29,8 +29,8 @@ public class Instance implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; 
 
-    @OneToMany(mappedBy="idInstance",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
-    Collection<modele.Objet_d_Instance> ObjetsDeLInstance;
+    @OneToMany(mappedBy="monInstance",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    private Collection<modele.Objet_d_Instance> ObjetsDeLInstance;
 
     @Column
     ( 
@@ -43,13 +43,23 @@ public class Instance implements Serializable {
     public Instance(){
         this.id= new Long(0);
         this.nom="Nom_Par_Défaut";
-        this.ObjetsDeLInstance = new HashSet<modele.Objet_d_Instance>();
+        this.ObjetsDeLInstance = new HashSet<>();
     }
     
     public Instance(String nom){
         this();
         this.nom=nom;
     }
+    
+    /****************************** METHODES ****************************/
+    
+    public void ajouterObjet(modele.Objet_d_Instance o){
+        o.setMonInstance(this);
+        this.ObjetsDeLInstance.add(o);
+    }
+    
+
+    /************************* GETTERS ET SETTERS ***********************/
     
     public Long getId() {
         return id;
@@ -58,6 +68,23 @@ public class Instance implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+    
+    public Collection<Objet_d_Instance> getObjetsDeLInstance() {
+        return ObjetsDeLInstance;
+    }
+
+    public void setObjetsDeLInstance(Collection<Objet_d_Instance> ObjetsDeLInstance) {
+        this.ObjetsDeLInstance = ObjetsDeLInstance;
+    }     
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }    
+    
 
     @Override
     public int hashCode() {
@@ -84,10 +111,10 @@ public class Instance implements Serializable {
 //        return "modele.Instance[ id=" + id + " ]";
 //    }
 
-    @Override
-    public String toString() {
-        return "Instance{" + "id=" + id + ", ObjetsDeLInstance=" + ObjetsDeLInstance + ", nom=" + nom + '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Instance{" + "id=" + id + ", ObjetsDeLInstance=" + ObjetsDeLInstance + ", nom=" + nom + '}';
+//    }
     
     
 }
