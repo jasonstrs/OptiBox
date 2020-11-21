@@ -30,11 +30,6 @@ public class MyPanel extends javax.swing.JPanel {
         this.instancesADessiner = new ArrayList<>();
     }
     
-    public void clearPaint(Graphics g){
-      super.paintComponent(g); // first draw a clear/empty panel
-
-    }
-    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // first draw a clear/empty panel
@@ -43,27 +38,11 @@ public class MyPanel extends javax.swing.JPanel {
             Font f = new Font("Montserrat Medium", Font.BOLD, 24);
             g.setFont(f);
             g.drawString("Veuillez selectionner une instance", this.getWidth()/6, this.getHeight()/3);              
-        } else { // on dessine les formes !
-            int x=0;
-            int y=0;
-            int cpt=0;
-            for (Objet_d_Instance oI : this.instancesADessiner){
-                g.setColor(this.getRandomColor());
-                g.fillRect(x, y, oI.getLargeur(), oI.getHauteur());
-                g.drawRect(x, y, oI.getLargeur(), oI.getHauteur());
-                cpt++;
-                x=oI.getLargeur()+20;
-                if (cpt ==2){
-                    x=0;
-                    y=100;
-                }
-                
-            }
-            System.out.println("ok");
-        }
-       
+        } else  // on dessine les formes !
+            dessinerInstance(g);       
     }
 
+    /************************* GETTERS ET SETTERS ***********************/
     public Collection getInstancesADessiner() {
         return instancesADessiner;
     }
@@ -72,6 +51,11 @@ public class MyPanel extends javax.swing.JPanel {
         this.instancesADessiner = instancesADessiner;
     }
     
+    /****************************** METHODES ****************************/
+    /**
+     * Fonction qui permet d'obtenir une couleur aléatoire
+     * @return Color
+     */
     public Color getRandomColor(){
         // source : https://stackoverflow.com/questions/4246351/creating-random-colour-in-java#:~:text=Random%20rand%20%3D%20new%20Random()%3B,float%20r%20%3D%20rand.
         Random rand = new Random();
@@ -81,26 +65,58 @@ public class MyPanel extends javax.swing.JPanel {
         return new Color(r, g, b);
     }
     
-    
-    
+    /**
+     * Fonction qui permet de dessiner l'instance complète en faisant attention à ne pas dépasser
+     * la largeur du panel, de même de manière à ce que les pièces ne se chevauchent pas
+     */
+    public void dessinerInstance(Graphics g){
+        final int largeurPanel = this.getWidth();
+        int x=0;
+        int y=0;
+        int indiceMin=0;
+        int indiceMax=0;
+        
+        // on commence par parcourir toute la liste des objets à dessiner
+        for (Objet_d_Instance oI : this.instancesADessiner){
+            g.setColor(this.getRandomColor()); // on attribut une couleur random
+            if (x+oI.getLargeur()>largeurPanel){ // on regarde si la pièce ne dépasse pas
+                // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 50
+                y += this.getHauteurMaxDesFormesDessinees(indiceMin, indiceMax)+50;
+                x=0; // on remet x à 0
+                indiceMin=indiceMax; // l'indice du premier objet prends la valeur de l'indice max
+            }
 
-   // @Override
-    //public void paint(Graphics g) {
-       /* System.out.println("OKOKOK");
-        super.paint(g); //To change body of generated methods, choose Tools | Templates.
-        g.setColor(Color.black);
-        Font f = new Font("Montserrat Medium", Font.BOLD, 24);
-        g.setFont(f);
-        g.drawString("Veuillez selectionner une instance", this.getWidth()/6, this.getHeight()/3);*/
-    //}    
+            g.fillRect(x, y, oI.getLargeur(), oI.getHauteur());
+            g.drawRect(x, y, oI.getLargeur(), oI.getHauteur());
+            indiceMax++; // on a dessiné une forme en plus, on se place sur la forme suivante
+            x+=oI.getLargeur()+30;  // on sépare les objets de 30
+        }
+    }
     
     
-    /*public void paintSecret(Graphics g){
-        g.setColor(Color.blue);
-        g.fillRect(50, 50, 150, 150);
-    }*/
+    /**
+     * Fonction qui permet de retourner la hauteur maximale d'un objet dans la liste
+     * des instances à dessiner entre deux valeurs d'indice 
+     * @param indiceMin borne inférieure de l'intervalle
+     * @param indiceMax borne supérieur exclue de l'intervalle
+     * @return la hauteur maximale
+     */
+    public int getHauteurMaxDesFormesDessinees(int indiceMin,int indiceMax){
+        int i;
+        int hauteur=0;
+        List list = new ArrayList(this.getInstancesADessiner());
+        Objet_d_Instance tmp;
+        
+        for (i=indiceMin;i<indiceMax;i++){ // on parcourt la liste
+            tmp = (Objet_d_Instance) list.get(i); // on récupère l'objet
+            if (tmp.getHauteur()>hauteur) // si la hauteur est supérieure à la variable hauteur
+                hauteur=tmp.getHauteur(); // on l'a stocke
+        }
+        return hauteur;
+    }    
     
     
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
