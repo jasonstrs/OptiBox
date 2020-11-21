@@ -7,7 +7,6 @@ io\exception\FieldNameException.class
 modele\Box.class
 view\Accueil$3.class
 modele\Instance_.class
-view\Test.class
 io\exception\FormatFileException.class
 modele\InstanceReader.class
 io\exception\ReaderException.class
@@ -15,7 +14,6 @@ modele\InstanceReader$InfosBox.class
 view\Accueil.class
 io\exception\FileExistException.class
 io\exception\NumberColumnsException.class
-view\Test$1.class
 modele\InstanceReader$Infos.class
 modele\Objet_d_Instance_.class
 modele\InstanceReader$InfosProduit.class
