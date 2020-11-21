@@ -103,7 +103,7 @@ public class InstanceReader {
             ////////////////////////////////////////////
             
             Box b = new Box(elem.getIdentifiant(),elem.getLongueur(),elem.getHauteur(),elem.getPrix());
-            i.getObjetsDeLInstance().add(b);
+            i.ajouterObjet(b);
         }
         
         // Dans la boucle qui suit, nous allons lire les donnees relatives a chaque produit.
@@ -126,7 +126,7 @@ public class InstanceReader {
             
             Produit p = new Produit(elem.getIdentifiant(),elem.getLongueur(),elem.getHauteur(),elem.getQuantite());
 //            b.setIdInstance(i.getId());
-            i.getObjetsDeLInstance().add(p);
+            i.ajouterObjet(p);
         }
         return i;
     }

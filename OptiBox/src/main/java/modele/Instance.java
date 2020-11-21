@@ -8,6 +8,7 @@ package modele;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import javax.persistence.Access;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +16,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.persistence.AccessType;
 
 /**
  *
  * @author simon
  */
 @Entity
+@Access(AccessType.FIELD)
 public class Instance implements Serializable {
 
     private static final long serialVersionUID = 1L;
