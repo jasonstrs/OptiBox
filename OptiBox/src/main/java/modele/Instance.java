@@ -116,5 +116,10 @@ public class Instance implements Serializable {
 //        return "Instance{" + "id=" + id + ", ObjetsDeLInstance=" + ObjetsDeLInstance + ", nom=" + nom + '}';
 //    }
     
+    @Override
+    public String toString() {
+        return nom ;
+    }
+    
     
 }
