@@ -44,7 +44,8 @@ public class AjoutDepuisCSV {
                 et.begin();
                     
                 for(Instance i : LesInstances){
-                    System.out.println("On ajoute l'instance "+i);
+                    System.out.println("On ajoute l'instance "+i+" : "
+                            +i.getObjetsDeLInstance().size()+" objets");
                     em.persist(i);
                 }
                 

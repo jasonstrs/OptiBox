@@ -6,20 +6,34 @@
 package modele;
 
 import java.io.Serializable;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
  * @author simon
  */
 @Entity
+@Table(
+        name="OBJET_D_INSTANCE",
+        uniqueConstraints={
+            @UniqueConstraint(
+                columnNames={"IDOBJET","MONINSTANCE"})
+        }
+)
+@Access(AccessType.FIELD)
 public class Objet_d_Instance implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,7 +60,7 @@ public class Objet_d_Instance implements Serializable {
     protected int Largeur;   
 
     @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
-    @JoinColumn(name="monInstance")
+    @JoinColumn(name="MonInstance")
     protected Instance monInstance = null;
  
     public Objet_d_Instance(){
