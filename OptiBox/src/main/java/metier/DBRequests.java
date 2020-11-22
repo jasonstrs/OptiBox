@@ -107,58 +107,64 @@ public class DBRequests {
      * Récupère toutes les instances de la BDD, avec leurs objets
      */
     public void getAllInstances() throws Exception{
-        if(dbr == null)getInstance();
+        try{
+            if(dbr == null)getInstance();
         
-        String requete;
-        ToutesLesInstances.clear();
-        requete = "SELECT * FROM INSTANCE c ORDER BY NOM";
-        ResultSet res;
-        
-        Statement stmt = conn.createStatement();
-        res = stmt.executeQuery(requete);
-        while (res.next()) {
-            Long ID = res.getLong("ID");
-            String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o, INSTANCE i WHERE i.ID = o.MONINSTANCE AND i.ID = ?";
-            ResultSet resObjets;
+            String requete;
+            ToutesLesInstances.clear();
+            requete = "SELECT * FROM INSTANCE c ORDER BY NOM";
+            ResultSet res;
 
-            PreparedStatement pstmtObjets = conn.prepareStatement(requeteObjets);
-            pstmtObjets.setLong(1, ID);
-            resObjets = pstmtObjets.executeQuery();
-            ArrayList<modele.Objet_d_Instance> l = new ArrayList<>();
-            while (resObjets.next()) {
-                switch(resObjets.getString("DTYPE")){
-                    case "Box":
-                        l.add(new Box(resObjets.getString("IDOBJET"),
-                                resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getFloat("PRIX")));
-                        break;
-                    case "Produit":
-                        l.add(new Produit(resObjets.getString("IDOBJET"),
-                                resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getInt("QUANTITE")));
-                        break;
-                }           
+            Statement stmt = conn.createStatement();
+            res = stmt.executeQuery(requete);
+            while (res.next()) {
+                Long ID = res.getLong("ID");
+                String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o, INSTANCE i WHERE i.ID = o.MONINSTANCE AND i.ID = ?";
+                ResultSet resObjets;
+
+                PreparedStatement pstmtObjets = conn.prepareStatement(requeteObjets);
+                pstmtObjets.setLong(1, ID);
+                resObjets = pstmtObjets.executeQuery();
+                ArrayList<modele.Objet_d_Instance> l = new ArrayList<>();
+                while (resObjets.next()) {
+                    switch(resObjets.getString("DTYPE")){
+                        case "Box":
+                            l.add(new Box(resObjets.getString("IDOBJET"),
+                                    resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getFloat("PRIX")));
+                            break;
+                        case "Produit":
+                            l.add(new Produit(resObjets.getString("IDOBJET"),
+                                    resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getInt("QUANTITE")));
+                            break;
+                    }           
+                }
+
+                ToutesLesInstances.add(new Instance(ID,res.getString("NOM"),l));
             }
+            res.close();
+            stmt.close();
+    //        System.out.println(ToutesLesInstances);
+    //        
+    //        System.out.println("On veut récupérer les objets des instances : ");
+    //        for(int i=0;i<ToutesLesInstances.size()-1;i++){
+    //            Instance currI = ToutesLesInstances.get(i);
+    //            ArrayList<Objet_d_Instance> l = this.getObjetsFromInstanceID(currI.getId());
+    //            System.out.println("Instance "+i+" : "+ToutesLesInstances.get(i));
+    //            System.out.println("Objets : "+l);
+    //            currI.setObjetsDeLInstance(l);
+    //
+    //        }
 
-            ToutesLesInstances.add(new Instance(ID,res.getString("NOM"),l));
+            System.out.println("On a récupéré toutes les instances : ");
+            for(Instance currI : this.ToutesLesInstances){
+                System.out.println(currI.getNom()+" : "+currI.getObjetsDeLInstance().size()+" objets.");
+                System.out.println(currI.getObjetsDeLInstance());
+            }
         }
-        res.close();
-        stmt.close();
-//        System.out.println(ToutesLesInstances);
-//        
-//        System.out.println("On veut récupérer les objets des instances : ");
-//        for(int i=0;i<ToutesLesInstances.size()-1;i++){
-//            Instance currI = ToutesLesInstances.get(i);
-//            ArrayList<Objet_d_Instance> l = this.getObjetsFromInstanceID(currI.getId());
-//            System.out.println("Instance "+i+" : "+ToutesLesInstances.get(i));
-//            System.out.println("Objets : "+l);
-//            currI.setObjetsDeLInstance(l);
-//
-//        }
+        catch(Exception e){
+            throw new Exception("Erreur lors de la récupération des Instances : "+e);
+        }
         
-        System.out.println("On a récupéré toutes les instances : ");
-        for(Instance currI : this.ToutesLesInstances){
-            System.out.println(currI.getNom()+" : "+currI.getObjetsDeLInstance().size()+" objets.");
-            System.out.println(currI.getObjetsDeLInstance());
-        }
         
     }
 
