@@ -125,10 +125,10 @@ public class Instance implements Serializable {
         return true;
     }
 
-    @Override
+   /* @Override
     public String toString() {
         return "modele.Instance[ id=" + id + " ]";
-    }
+    }*/
 
 //    @Override
 //    public String toString() {

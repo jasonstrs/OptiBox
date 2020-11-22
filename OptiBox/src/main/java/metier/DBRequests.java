@@ -197,6 +197,12 @@ public class DBRequests {
         
         return l;
     }
+
+    public List<Instance> getToutesLesInstances() {
+        return ToutesLesInstances;
+    }
+    
+    
     
     
     @Override
