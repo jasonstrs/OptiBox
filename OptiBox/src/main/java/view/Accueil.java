@@ -15,11 +15,15 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
+import metier.DBRequests;
 import modele.Instance;
 import modele.Objet_d_Instance;
 import test.TestEnti;
@@ -30,6 +34,8 @@ import test.TestEnti;
  */
 public class Accueil extends javax.swing.JFrame {
     private Graphics g;
+    private DBRequests dbr;
+    
     /**
      * Creates new form Accueil
      */
@@ -48,20 +54,38 @@ public class Accueil extends javax.swing.JFrame {
     private void initialisationFenetre(){
         this.setVisible(true);
         this.setTitle("OptiBox Accueil");
-        this.setSize(1000, 600);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+        this.setSize(dim.width-100, dim.height-100);
+        
+        this.myPanel1.setSize(dim.width-200-this.jList_instance.getWidth(), dim.height-10);
+        this.myPanel1.setLocation(this.jList_instance.getWidth()+20, 10);
+
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        /*System.out.println("taille ecran : "+dim.getWidth());
+        System.out.println("Taille panel : "+this.myPanel1.getWidth());
+        System.out.println("taille list : "+this.jList_instance.getWidth());*/
     }
         
     private void getAllInstance(){
         DefaultListModel dlm = new DefaultListModel();
         this.jList_instance.setModel(dlm);
-        TestEnti tE = new TestEnti();
-        Instance i = tE.getOneInstanceTest();
-        dlm.addElement(i);
-        dlm.addElement(i);
-        dlm.addElement(i);
-        dlm.addElement(i);        
+
+        try {
+            //        dlm.addElement(i);
+            dbr = DBRequests.getInstance();
+            dbr.getAllInstances();
+            List<Instance> instances= dbr.getToutesLesInstances();
+            for (Instance i : instances){
+                dlm.addElement(i);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+
+        System.out.println(dbr.ToutesLesInstances);
+              
     }
     
     public void afficherInstance(Instance i){
@@ -118,7 +142,6 @@ public class Accueil extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(java.awt.Color.red);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setResizable(false);
         addWindowStateListener(new java.awt.event.WindowStateListener() {
             public void windowStateChanged(java.awt.event.WindowEvent evt) {
                 formWindowStateChanged(evt);
@@ -150,15 +173,15 @@ public class Accueil extends javax.swing.JFrame {
         myPanel1.setLayout(myPanel1Layout);
         myPanel1Layout.setHorizontalGroup(
             myPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 680, Short.MAX_VALUE)
+            .addGap(0, 730, Short.MAX_VALUE)
         );
         myPanel1Layout.setVerticalGroup(
             myPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
+            .addGap(0, 570, Short.MAX_VALUE)
         );
 
         getContentPane().add(myPanel1);
-        myPanel1.setBounds(300, 20, 680, 540);
+        myPanel1.setBounds(300, 20, 730, 570);
 
         menuBar.setBackground(java.awt.Color.red);
 

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 import modele.Objet_d_Instance;
+import modele.Produit;
 
 /**
  *
@@ -21,6 +22,7 @@ import modele.Objet_d_Instance;
 public class MyPanel extends javax.swing.JPanel {
     
     private Collection<modele.Objet_d_Instance> instancesADessiner;
+    private final int scale=4;
     
     /**
      * Creates new form MyPanel
@@ -75,21 +77,41 @@ public class MyPanel extends javax.swing.JPanel {
         int y=0;
         int indiceMin=0;
         int indiceMax=0;
-        
+        int i=0;
+        Produit temp=null;
+        System.out.println("largeur du panel : "+largeurPanel);
+
         // on commence par parcourir toute la liste des objets à dessiner
         for (Objet_d_Instance oI : this.instancesADessiner){
-            g.setColor(this.getRandomColor()); // on attribut une couleur random
-            if (x+oI.getLargeur()>largeurPanel){ // on regarde si la pièce ne dépasse pas
-                // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 50
-                y += this.getHauteurMaxDesFormesDessinees(indiceMin, indiceMax)+50;
-                x=0; // on remet x à 0
-                indiceMin=indiceMax; // l'indice du premier objet prends la valeur de l'indice max
+            if (oI instanceof Produit){ // si c'est un produit
+                g.setColor(this.getRandomColor()); // on attribut une couleur random
+                temp=(Produit)oI;
+                for (i=0;i<temp.getQuantite();i++){ // on dessine le nombre de produit suivant la quantité
+                    if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
+                        // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 20
+                        y += this.getHauteurMaxDesFormesDessinees(indiceMin, indiceMax)/scale+20;
+                        x=0; // on remet x à 0
+                        indiceMin=indiceMax; // l'indice du premier objet prends la valeur de l'indice max
+                    }
+                    g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
+                    g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
+                    x+=(oI.getLargeur()/scale)+30;  // on sépare les objets de 30
+                } 
+                indiceMax++; // on incrémente l'indice max
+            } else { // si c'est une box
+                if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
+                    // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 50
+                    y += this.getHauteurMaxDesFormesDessinees(indiceMin, indiceMax)/scale+20;
+                    x=0; // on remet x à 0
+                    indiceMin=indiceMax; // l'indice du premier objet prends la valeur de l'indice max
+                }
+                g.setColor(Color.yellow);
+                g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
+                g.setColor(Color.black); // on attribut une couleur random
+                g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
+                indiceMax++; // on a dessiné une forme en plus, on se place sur la forme suivante
+                x+=(oI.getLargeur()/scale)+30;  // on sépare les objets de 30
             }
-
-            g.fillRect(x, y, oI.getLargeur(), oI.getHauteur());
-            g.drawRect(x, y, oI.getLargeur(), oI.getHauteur());
-            indiceMax++; // on a dessiné une forme en plus, on se place sur la forme suivante
-            x+=oI.getLargeur()+30;  // on sépare les objets de 30
         }
     }
     
@@ -105,14 +127,16 @@ public class MyPanel extends javax.swing.JPanel {
         int i;
         int hauteur=0;
         List list = new ArrayList(this.getInstancesADessiner());
-        Objet_d_Instance tmp;
+        Objet_d_Instance tmp=(Objet_d_Instance)list.get(indiceMin); // utile si jamais indiceMax==indiceMin
         
         for (i=indiceMin;i<indiceMax;i++){ // on parcourt la liste
             tmp = (Objet_d_Instance) list.get(i); // on récupère l'objet
             if (tmp.getHauteur()>hauteur) // si la hauteur est supérieure à la variable hauteur
                 hauteur=tmp.getHauteur(); // on l'a stocke
         }
-        return hauteur;
+        // si la hauteur vaut 0, ça veut dire que indice max=indice min, donc la hauteur
+        // est la même pour toute la ligne, donc ça vaut une hauteur parmi la liste
+        return hauteur == 0 ? tmp.getHauteur()  : hauteur ; 
     }    
     
     
