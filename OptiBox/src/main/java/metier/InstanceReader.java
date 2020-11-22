@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package metier;
 
 import io.exception.EmptyFieldException;
 import io.exception.FieldFormatException;
@@ -16,6 +16,9 @@ import io.exception.ReaderException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import modele.Box;
+import modele.Instance;
+import modele.Produit;
 
 /**
  * Classe qui permet de lire une instance pour le projet de POO3 2020/2021.

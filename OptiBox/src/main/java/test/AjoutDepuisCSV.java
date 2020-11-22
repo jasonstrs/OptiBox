@@ -22,7 +22,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import modele.Box;
 import modele.Instance;
-import modele.InstanceReader;
+import metier.InstanceReader;
 import modele.Produit;
 
 /**
