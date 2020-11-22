@@ -6,6 +6,7 @@
 package modele;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import javax.persistence.Access;
@@ -45,15 +46,28 @@ public class Instance implements Serializable {
     )
     private String nom;
        
+    
+    /**************************** CONSTRUCTEURS ************************/
+    
     public Instance(){
         this.id= new Long(0);
         this.nom="Nom_Par_Défaut";
-        this.ObjetsDeLInstance = new HashSet<>();
+        this.ObjetsDeLInstance = new ArrayList<>();
     }
     
     public Instance(String nom){
         this();
         this.nom=nom;
+    }
+    
+    public Instance(Long ID, String nom){
+        this(nom);
+        this.id = ID;   
+    }
+    
+        public Instance(Long ID, String nom,ArrayList<modele.Objet_d_Instance> l){
+        this(ID,nom);
+        this.ObjetsDeLInstance = l;
     }
     
     /****************************** METHODES ****************************/
@@ -111,20 +125,16 @@ public class Instance implements Serializable {
         return true;
     }
 
-//    @Override
-//    public String toString() {
-//        return "modele.Instance[ id=" + id + " ]";
-//    }
+    @Override
+    public String toString() {
+        return "modele.Instance[ id=" + id + " ]";
+    }
 
 //    @Override
 //    public String toString() {
 //        return "Instance{" + "id=" + id + ", ObjetsDeLInstance=" + ObjetsDeLInstance + ", nom=" + nom + '}';
 //    }
     
-    @Override
-    public String toString() {
-        return nom ;
-    }
     
     
 }

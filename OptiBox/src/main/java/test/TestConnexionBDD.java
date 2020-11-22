@@ -21,22 +21,7 @@ public class TestConnexionBDD {
         //On récupère l'instance de DBRequests
         DBRequests dbr = DBRequests.getInstance();
         
-        String requete;
-        dbr.ToutesLesInstances.clear();
-        requete = "SELECT * FROM INSTANCE c ORDER BY NOM";
-        ResultSet res;
-        Instance i = null;
-        res = null;
-        Statement stmt = dbr.conn.createStatement();
-        res = stmt.executeQuery(requete);
-        while (res.next()) {
-            i = new Instance(res.getString("NOM"));
-            dbr.ToutesLesInstances.add(i);
-            
-        }
-        res.close();
-        stmt.close();
-        System.out.println("On tente de récupérer le nom de toutes les instances");
+        dbr.getAllInstances();
         System.out.println(dbr.ToutesLesInstances);
     }
 }
