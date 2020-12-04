@@ -14,6 +14,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import static java.awt.image.ImageObserver.HEIGHT;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,7 +22,9 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import metier.DBRequests;
 import modele.Instance;
@@ -35,6 +38,7 @@ import test.TestEnti;
 public class Accueil extends javax.swing.JFrame {
     private Graphics g;
     private DBRequests dbr;
+    public static int tailleDuPanel;
     
     /**
      * Creates new form Accueil
@@ -42,9 +46,7 @@ public class Accueil extends javax.swing.JFrame {
     public Accueil() {
         initComponents();
         initialisationFenetre();   
-        this.setG(this.myPanel1.getGraphics());
-        
-        //this.myPanel1.defaultPaint(g);
+        this.setG(this.myPanel1.getGraphics());        
         getAllInstance();
     }
     
@@ -55,12 +57,17 @@ public class Accueil extends javax.swing.JFrame {
         this.setVisible(true);
         this.setTitle("OptiBox Accueil");
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-
         this.setSize(dim.width, dim.height-50);
+
+        // on place le Scroll
+        this.jScrollPane2.setLocation(this.jList_instance.getWidth()+20, 5);
+        // on lui met des dimensions
+        Dimension dimScroll = new Dimension(dim.width-40-this.jList_instance.getWidth(),dim.height-150);
+        this.jScrollPane2.setSize(dimScroll);
         
-        this.myPanel1.setSize(dim.width-100-this.jList_instance.getWidth(), dim.height-10);
-        this.myPanel1.setLocation(this.jList_instance.getWidth()+20, 10);
-        this.jList_instance.setSize(this.jList_instance.getWidth(), dim.height);
+        
+       Dimension dimPanel = new Dimension(dim.width-120-this.jList_instance.getWidth(),2500);
+        this.myPanel1.setPreferredSize(dimPanel);
         this.setLocation(0, 0);
     }
         
@@ -69,7 +76,6 @@ public class Accueil extends javax.swing.JFrame {
         this.jList_instance.setModel(dlm);
 
         try {
-            //        dlm.addElement(i);
             dbr = DBRequests.getInstance();
             dbr.getAllInstances();
             List<Instance> instances= dbr.getToutesLesInstances();
@@ -77,18 +83,17 @@ public class Accueil extends javax.swing.JFrame {
                 dlm.addElement(i);
             }
         } catch (Exception ex) {
-            Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-
-        System.out.println(dbr.ToutesLesInstances);
-              
+            //Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Impossible de charger l'ensemble des instances.\nVeuillez vérifier votre connection à la base de donnée.", "Erreur de chargement", HEIGHT);
+            this.dispose();
+        }              
     }
     
     public void afficherInstance(Instance i){
         Collection<Objet_d_Instance> ObjectsDeLInstance = i.getObjetsDeLInstance();
         this.myPanel1.setInstancesADessiner(ObjectsDeLInstance);
         this.myPanel1.repaint();
+        System.out.println(this.myPanel1.getHeight());
     }
 
     public Graphics getG() {
@@ -111,6 +116,7 @@ public class Accueil extends javax.swing.JFrame {
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList_instance = new javax.swing.JList<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
         myPanel1 = new tools.MyPanel();
         menuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -145,24 +151,26 @@ public class Accueil extends javax.swing.JFrame {
                 jList_instanceMouseClicked(evt);
             }
         });
+        jList_instance.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList_instanceValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(jList_instance);
 
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(0, 0, 280, 580);
 
-        javax.swing.GroupLayout myPanel1Layout = new javax.swing.GroupLayout(myPanel1);
-        myPanel1.setLayout(myPanel1Layout);
-        myPanel1Layout.setHorizontalGroup(
-            myPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 730, Short.MAX_VALUE)
-        );
-        myPanel1Layout.setVerticalGroup(
-            myPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 570, Short.MAX_VALUE)
-        );
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(200, 200));
+        jScrollPane2.setViewportView(myPanel1);
 
-        getContentPane().add(myPanel1);
-        myPanel1.setBounds(300, 20, 730, 570);
+        myPanel1.setMaximumSize(new java.awt.Dimension(1500, 1500));
+        myPanel1.setPreferredSize(new java.awt.Dimension(500, 500));
+        myPanel1.setLayout(null);
+        jScrollPane2.setViewportView(myPanel1);
+
+        getContentPane().add(jScrollPane2);
+        jScrollPane2.setBounds(380, 40, 620, 270);
 
         menuBar.setBackground(java.awt.Color.red);
 
@@ -178,18 +186,22 @@ public class Accueil extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
-        // TODO add your handling code here:
-        System.out.println("width changed");
-        //this.setLayout(null);
-        //this.jLabel_default.setLocation(200, 200);
+
     }//GEN-LAST:event_formWindowStateChanged
 
     private void jList_instanceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList_instanceMouseClicked
         // TODO add your handling code here:
-        int index = this.jList_instance.getSelectedIndex(); // on récupère l'index qui a été choisi dans la liste
-        Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
-        afficherInstance((Instance)c); // on caste l'objet et on l'affiche
+        
     }//GEN-LAST:event_jList_instanceMouseClicked
+
+    private void jList_instanceValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList_instanceValueChanged
+        // TODO add your handling code here:
+        if (!evt.getValueIsAdjusting()) {//This line prevents double events
+            int index = this.jList_instance.getSelectedIndex(); // on récupère l'index qui a été choisi dans la liste
+            Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
+            afficherInstance((Instance)c); // on caste l'objet et on l'affiche
+        }
+    }//GEN-LAST:event_jList_instanceValueChanged
 
     /**
      * @param args the command line arguments
@@ -232,6 +244,7 @@ public class Accueil extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menuBar;
     private tools.MyPanel myPanel1;
     // End of variables declaration//GEN-END:variables

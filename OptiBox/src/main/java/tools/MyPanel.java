@@ -5,15 +5,21 @@
  */
 package tools;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Toolkit;
+import java.awt.geom.Line2D;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 import modele.Objet_d_Instance;
 import modele.Produit;
+import view.Accueil;
 
 /**
  *
@@ -23,7 +29,6 @@ public class MyPanel extends javax.swing.JPanel {
     
     private Collection<modele.Objet_d_Instance> instancesADessiner;
     private final int scale=5;
-    
     /**
      * Creates new form MyPanel
      */
@@ -40,8 +45,11 @@ public class MyPanel extends javax.swing.JPanel {
             Font f = new Font("Montserrat Medium", Font.BOLD, 24);
             g.setFont(f);
             g.drawString("Veuillez selectionner une instance", this.getWidth()/6, this.getHeight()/3);              
-        } else  // on dessine les formes !
-            dessinerInstance(g);       
+        } else{  // on dessine les formes !
+            dessinerEntete(g,"Box",0,5);
+            dessinerInstance(g); 
+        }
+        
     }
 
     /************************* GETTERS ET SETTERS ***********************/
@@ -74,15 +82,23 @@ public class MyPanel extends javax.swing.JPanel {
     public void dessinerInstance(Graphics g){
         final int largeurPanel = this.getWidth();
         int x=0;
-        int y=0;
+        int y=60;
         int indiceMin=0;
         int indiceMax=0;
         int i=0;
         Produit temp=null;
+        boolean flag=false;
 
         // on commence par parcourir toute la liste des objets à dessiner
         for (Objet_d_Instance oI : this.instancesADessiner){
             if (oI instanceof Produit){ // si c'est un produit
+                if(!flag){
+                    y+=this.getHauteurMaxDesFormesDessinees(indiceMin,indiceMax)/scale+20;
+                    x=0;
+                    dessinerEntete(g,"Produits",x,y);
+                    y+=60;
+                    flag=true;
+                }
                 g.setColor(this.getRandomColor()); // on attribut une couleur random
                 temp=(Produit)oI;
                 for (i=0;i<temp.getQuantite();i++){ // on dessine le nombre de produit suivant la quantité
@@ -113,14 +129,27 @@ public class MyPanel extends javax.swing.JPanel {
                 }
                 g.setColor(Color.yellow);
                 g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
-                g.setColor(Color.black); // on attribut une couleur random
-                g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
+                //g.setColor(Color.black); // on attribut une couleur random
+                //g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
                 indiceMax++; // on a dessiné une forme en plus, on se place sur la forme suivante
                 x+=(oI.getLargeur()/scale)+30;  // on sépare les objets de 30
             }
         }
     }
     
+    public void dessinerEntete(Graphics g,String text,int x,int y){
+        /*Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(8));
+        g2.draw(new Line2D.Float(x, y, this.getWidth(), y));
+        g.setFont(new Font("Montserrat UltraLight", Font.BOLD, 30)); 
+        g.drawString(text, this.getWidth()/2 -8, 40);
+        g2.draw(new Line2D.Float(x, 48+y, this.getWidth(), 48+y));*/
+        g.setColor(Color.black);
+        g.drawLine(0, y, this.getWidth(), y);
+        g.setFont(new Font("Montserrat UltraLight", Font.BOLD, 30)); 
+        g.drawString(text, this.getWidth()/2 -8, 35+y);
+        g.drawLine(0, y+48, this.getWidth(), y+48);
+    }
     
     /**
      * Fonction qui permet de retourner la hauteur maximale d'un objet dans la liste
@@ -143,8 +172,8 @@ public class MyPanel extends javax.swing.JPanel {
         // si la hauteur vaut 0, ça veut dire que indice max=indice min, donc la hauteur
         // est la même pour toute la ligne, donc ça vaut une hauteur parmi la liste
         return hauteur == 0 ? tmp.getHauteur()  : hauteur ; 
-    }    
-    
+    }  
+
     
   
 
@@ -156,6 +185,8 @@ public class MyPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        setVerifyInputWhenFocusTarget(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

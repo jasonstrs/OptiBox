@@ -47,17 +47,9 @@ public class DBRequests {
      * @throws SQLNonTransientConnectionException
      * @throws Exception 
      */
-    private DBRequests() throws SQLNonTransientConnectionException, Exception{
+    private DBRequests() throws Exception{
         ToutesLesInstances = new ArrayList<>();
-        try {
-            connect();           
-        }
-        catch (SQLNonTransientConnectionException exCo){
-            throw new SQLNonTransientConnectionException(exCo);
-        }
-        catch (Exception ex) {
-            throw new Exception(ex);
-        }
+        connect();           
     }
     
     /**
@@ -69,38 +61,21 @@ public class DBRequests {
      * @throws Exception 
      */
     public static DBRequests getInstance() throws Exception{
-        if(dbr == null){
-            try {
-                dbr = new DBRequests();
-            }
-            catch (Exception ex) {
-                throw new Exception(ex);
-            }
-        }
-        
+        if(dbr == null)
+            dbr = new DBRequests();
         return dbr;
     }
     
     
 
     
-    private void connect() throws Exception,SQLNonTransientConnectionException{
-        
-        try{
-            String driverClass="org.apache.derby.jdbc.ClientDriver";
-            String urlDatabase="jdbc:derby://localhost:1527/OptiBoxDB";
-            String user = "root";
-            String pass = "mysql";
-            Class.forName(driverClass);
-            conn=DriverManager.getConnection(urlDatabase,user,pass);
-        }
-        catch(SQLNonTransientConnectionException exCo){
-            throw new SQLNonTransientConnectionException(exCo);
-        }
-        catch(ClassNotFoundException | SQLException e){
-            throw new Exception(e);
-        }
-        
+    private void connect() throws Exception{
+        String driverClass="org.apache.derby.jdbc.ClientDriver";
+        String urlDatabase="jdbc:derby://localhost:1527/OptiBoxDB";
+        String user = "root";
+        String pass = "mysql";
+        Class.forName(driverClass);
+        conn=DriverManager.getConnection(urlDatabase,user,pass);
     }
     
     /**
@@ -143,18 +118,6 @@ public class DBRequests {
             }
             res.close();
             stmt.close();
-    //        System.out.println(ToutesLesInstances);
-    //        
-    //        System.out.println("On veut récupérer les objets des instances : ");
-    //        for(int i=0;i<ToutesLesInstances.size()-1;i++){
-    //            Instance currI = ToutesLesInstances.get(i);
-    //            ArrayList<Objet_d_Instance> l = this.getObjetsFromInstanceID(currI.getId());
-    //            System.out.println("Instance "+i+" : "+ToutesLesInstances.get(i));
-    //            System.out.println("Objets : "+l);
-    //            currI.setObjetsDeLInstance(l);
-    //
-    //        }
-
             System.out.println("On a récupéré toutes les instances : ");
             for(Instance currI : this.ToutesLesInstances){
                 System.out.println(currI.getNom()+" : "+currI.getObjetsDeLInstance().size()+" objets.");
