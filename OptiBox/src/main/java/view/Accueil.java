@@ -56,15 +56,12 @@ public class Accueil extends javax.swing.JFrame {
         this.setTitle("OptiBox Accueil");
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
-        this.setSize(dim.width-100, dim.height-100);
+        this.setSize(dim.width, dim.height-50);
         
-        this.myPanel1.setSize(dim.width-200-this.jList_instance.getWidth(), dim.height-10);
+        this.myPanel1.setSize(dim.width-100-this.jList_instance.getWidth(), dim.height-10);
         this.myPanel1.setLocation(this.jList_instance.getWidth()+20, 10);
-
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
-        /*System.out.println("taille ecran : "+dim.getWidth());
-        System.out.println("Taille panel : "+this.myPanel1.getWidth());
-        System.out.println("taille list : "+this.jList_instance.getWidth());*/
+        this.jList_instance.setSize(this.jList_instance.getWidth(), dim.height);
+        this.setLocation(0, 0);
     }
         
     private void getAllInstance(){
@@ -102,23 +99,6 @@ public class Accueil extends javax.swing.JFrame {
         this.g = g;
     }
     
-    
-    /*
-        List<Client> listeDesClients = new ArrayList<>();
-        DefaultListModel dlm = new DefaultListModel();
-        this.Liste_des_clients.setModel(dlm);
-        try {
-            listeDesClients=this.RA.ensClients(nomprenom);
-            for (Client c : listeDesClients){
-                dlm.addElement(c);
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Impossible de lister les différents clients, il y a un problème avec la BDD.", "Erreur", HEIGHT);
-            this.dispose();
-            Logger.getLogger(GestionClients.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    */
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -152,13 +132,14 @@ public class Accueil extends javax.swing.JFrame {
         jScrollPane1.setBackground(java.awt.Color.red);
 
         jList_instance.setBackground(java.awt.Color.lightGray);
-        jList_instance.setFont(new java.awt.Font("Montserrat Medium", 0, 24)); // NOI18N
+        jList_instance.setFont(new java.awt.Font("Montserrat Medium", 0, 36)); // NOI18N
         jList_instance.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
         jList_instance.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jList_instance.setMaximumSize(new java.awt.Dimension(1000, 1000));
         jList_instance.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jList_instanceMouseClicked(evt);

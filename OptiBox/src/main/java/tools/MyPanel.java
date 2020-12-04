@@ -22,7 +22,7 @@ import modele.Produit;
 public class MyPanel extends javax.swing.JPanel {
     
     private Collection<modele.Objet_d_Instance> instancesADessiner;
-    private final int scale=4;
+    private final int scale=5;
     
     /**
      * Creates new form MyPanel
@@ -79,7 +79,6 @@ public class MyPanel extends javax.swing.JPanel {
         int indiceMax=0;
         int i=0;
         Produit temp=null;
-        System.out.println("largeur du panel : "+largeurPanel);
 
         // on commence par parcourir toute la liste des objets à dessiner
         for (Objet_d_Instance oI : this.instancesADessiner){
@@ -89,13 +88,20 @@ public class MyPanel extends javax.swing.JPanel {
                 for (i=0;i<temp.getQuantite();i++){ // on dessine le nombre de produit suivant la quantité
                     if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
                         // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 20
-                        y += this.getHauteurMaxDesFormesDessinees(indiceMin, indiceMax)/scale+20;
+                   
+                        // notation ternaire ci-dessous :
+                        // si on a pas encore dessiné de pièce sur la ligne, on ne prends pas la hauteur de cette pièce pour trouver la hauteur max
+                        // si une de ces pièces à déjà était dessinée, on doit prendre en compte sa hauteur, donc indiceMax+1
+                        y += this.getHauteurMaxDesFormesDessinees(indiceMin, i==0 ? indiceMax : indiceMax+1)/scale+20;
                         x=0; // on remet x à 0
                         indiceMin=indiceMax; // l'indice du premier objet prends la valeur de l'indice max
                     }
                     g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
                     g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
-                    x+=(oI.getLargeur()/scale)+30;  // on sépare les objets de 30
+                    
+                    // si on sépare 2 mêmes produits, on met un petit espace
+                    // sinon, si c'était le dernier produit, on met un grand espace
+                    x+= (i==temp.getQuantite()-1)? (oI.getLargeur()/scale)+30 : (oI.getLargeur()/scale)+10;
                 } 
                 indiceMax++; // on incrémente l'indice max
             } else { // si c'est une box
