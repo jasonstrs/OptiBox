@@ -5,31 +5,17 @@
  */
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import static java.awt.image.ImageObserver.HEIGHT;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.BevelBorder;
 import metier.DBRequests;
 import modele.Instance;
 import modele.Objet_d_Instance;
-import test.TestEnti;
 
 /**
  *
@@ -38,7 +24,6 @@ import test.TestEnti;
 public class Accueil extends javax.swing.JFrame {
     private Graphics g;
     private DBRequests dbr;
-    public static int tailleDuPanel;
     
     /**
      * Creates new form Accueil
@@ -57,17 +42,13 @@ public class Accueil extends javax.swing.JFrame {
         this.setVisible(true);
         this.setTitle("OptiBox Accueil");
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(dim.width, dim.height-50);
+        this.setSize(dim.width+5, dim.height-50);
 
         // on place le Scroll
         this.jScrollPane2.setLocation(this.jList_instance.getWidth()+20, 5);
         // on lui met des dimensions
-        Dimension dimScroll = new Dimension(dim.width-40-this.jList_instance.getWidth(),dim.height-150);
+        Dimension dimScroll = new Dimension(dim.width-30-this.jList_instance.getWidth(),dim.height-150);
         this.jScrollPane2.setSize(dimScroll);
-        
-        
-       Dimension dimPanel = new Dimension(dim.width-120-this.jList_instance.getWidth(),2500);
-        this.myPanel1.setPreferredSize(dimPanel);
         this.setLocation(0, 0);
     }
         
@@ -93,7 +74,6 @@ public class Accueil extends javax.swing.JFrame {
         Collection<Objet_d_Instance> ObjectsDeLInstance = i.getObjetsDeLInstance();
         this.myPanel1.setInstancesADessiner(ObjectsDeLInstance);
         this.myPanel1.repaint();
-        System.out.println(this.myPanel1.getHeight());
     }
 
     public Graphics getG() {

@@ -5,6 +5,7 @@
  */
 package test;
 
+import java.awt.Color;
 import java.util.HashSet;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -40,11 +41,11 @@ public class TestEnti {
                 
                 System.out.println("On crée les 3 Box");
                                 
-                Produit p1 = new Produit("P00",50,10,5);
-                Produit p2 = new Produit("P01",30,10,1);
-                Produit p3 = new Produit("P02",60,60,3);
-                Produit p4 = new Produit("P03",80,20,7);
-                Produit p5 = new Produit("P04",20,60,2);
+                Produit p1 = new Produit("P00",50,10,5,Color.BLACK);
+                Produit p2 = new Produit("P01",30,10,1,Color.BLACK);
+                Produit p3 = new Produit("P02",60,60,3,Color.BLACK);
+                Produit p4 = new Produit("P03",80,20,7,Color.BLACK);
+                Produit p5 = new Produit("P04",20,60,2,Color.BLACK);
 
                 Instance i = new Instance("Instance_Test1");
                 
@@ -87,11 +88,11 @@ public class TestEnti {
 
         System.out.println("On crée les 3 Box");
 
-        Produit p1 = new Produit("P00",50,10,5);
-        Produit p2 = new Produit("P01",30,10,1);
-        Produit p3 = new Produit("P02",60,60,3);
-        Produit p4 = new Produit("P03",80,20,7);
-        Produit p5 = new Produit("P04",20,60,2);
+        Produit p1 = new Produit("P00",50,10,5,Color.BLACK);
+        Produit p2 = new Produit("P01",30,10,1,Color.BLACK);
+        Produit p3 = new Produit("P02",60,60,3,Color.BLACK);
+        Produit p4 = new Produit("P03",80,20,7,Color.BLACK);
+        Produit p5 = new Produit("P04",20,60,2,Color.BLACK);
 
         Instance i = new Instance("Instance_Test1");
 

@@ -5,21 +5,14 @@
  */
 package tools;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Toolkit;
-import java.awt.geom.Line2D;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 import modele.Objet_d_Instance;
 import modele.Produit;
-import view.Accueil;
 
 /**
  *
@@ -62,18 +55,6 @@ public class MyPanel extends javax.swing.JPanel {
     }
     
     /****************************** METHODES ****************************/
-    /**
-     * Fonction qui permet d'obtenir une couleur aléatoire
-     * @return Color
-     */
-    public Color getRandomColor(){
-        // source : https://stackoverflow.com/questions/4246351/creating-random-colour-in-java#:~:text=Random%20rand%20%3D%20new%20Random()%3B,float%20r%20%3D%20rand.
-        Random rand = new Random();
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
-        return new Color(r, g, b);
-    }
     
     /**
      * Fonction qui permet de dessiner l'instance complète en faisant attention à ne pas dépasser
@@ -83,58 +64,56 @@ public class MyPanel extends javax.swing.JPanel {
         final int largeurPanel = this.getWidth();
         int x=0;
         int y=60;
-        int indiceMin=0;
-        int indiceMax=0;
         int i=0;
         Produit temp=null;
-        boolean flag=false;
+        int maxHeight=0;
+        boolean flag=false; // permet de savoir si on doit dessiner l'entête des produits
 
         // on commence par parcourir toute la liste des objets à dessiner
         for (Objet_d_Instance oI : this.instancesADessiner){
             if (oI instanceof Produit){ // si c'est un produit
                 if(!flag){
-                    y+=this.getHauteurMaxDesFormesDessinees(indiceMin,indiceMax)/scale+20;
+                    y+=maxHeight+20;
                     x=0;
+                    maxHeight=0;
                     dessinerEntete(g,"Produits",x,y);
                     y+=60;
                     flag=true;
                 }
-                g.setColor(this.getRandomColor()); // on attribut une couleur random
+                g.setColor(oI.getColor()); // on attribut une couleur random
                 temp=(Produit)oI;
                 for (i=0;i<temp.getQuantite();i++){ // on dessine le nombre de produit suivant la quantité
                     if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
                         // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 20
-                   
-                        // notation ternaire ci-dessous :
-                        // si on a pas encore dessiné de pièce sur la ligne, on ne prends pas la hauteur de cette pièce pour trouver la hauteur max
-                        // si une de ces pièces à déjà était dessinée, on doit prendre en compte sa hauteur, donc indiceMax+1
-                        y += this.getHauteurMaxDesFormesDessinees(indiceMin, i==0 ? indiceMax : indiceMax+1)/scale+20;
+                        y+=maxHeight+20;
                         x=0; // on remet x à 0
-                        indiceMin=indiceMax; // l'indice du premier objet prends la valeur de l'indice max
                     }
                     g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
                     g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
-                    
+                    if (oI.getHauteur()/scale>maxHeight)
+                        maxHeight=oI.getHauteur()/scale;
                     // si on sépare 2 mêmes produits, on met un petit espace
                     // sinon, si c'était le dernier produit, on met un grand espace
                     x+= (i==temp.getQuantite()-1)? (oI.getLargeur()/scale)+30 : (oI.getLargeur()/scale)+10;
                 } 
-                indiceMax++; // on incrémente l'indice max
             } else { // si c'est une box
                 if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
-                    // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 50
-                    y += this.getHauteurMaxDesFormesDessinees(indiceMin, indiceMax)/scale+20;
+                    y+=maxHeight+20;
+                    maxHeight=0;
                     x=0; // on remet x à 0
-                    indiceMin=indiceMax; // l'indice du premier objet prends la valeur de l'indice max
                 }
-                g.setColor(Color.yellow);
+                g.setColor(oI.getColor());
                 g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
-                //g.setColor(Color.black); // on attribut une couleur random
-                //g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
-                indiceMax++; // on a dessiné une forme en plus, on se place sur la forme suivante
+                if (oI.getHauteur()/scale>maxHeight)
+                        maxHeight=oI.getHauteur()/scale;
                 x+=(oI.getLargeur()/scale)+30;  // on sépare les objets de 30
             }
         }
+        
+        // on ajuste la hauteur du panel
+        Dimension dimPanel = new Dimension(this.getWidth()-20,y);
+        this.setPreferredSize(dimPanel);
+        this.revalidate();
     }
     
     public void dessinerEntete(Graphics g,String text,int x,int y){
@@ -150,32 +129,6 @@ public class MyPanel extends javax.swing.JPanel {
         g.drawString(text, this.getWidth()/2 -8, 35+y);
         g.drawLine(0, y+48, this.getWidth(), y+48);
     }
-    
-    /**
-     * Fonction qui permet de retourner la hauteur maximale d'un objet dans la liste
-     * des instances à dessiner entre deux valeurs d'indice 
-     * @param indiceMin borne inférieure de l'intervalle
-     * @param indiceMax borne supérieur exclue de l'intervalle
-     * @return la hauteur maximale
-     */
-    public int getHauteurMaxDesFormesDessinees(int indiceMin,int indiceMax){
-        int i;
-        int hauteur=0;
-        List list = new ArrayList(this.getInstancesADessiner());
-        Objet_d_Instance tmp=(Objet_d_Instance)list.get(indiceMin); // utile si jamais indiceMax==indiceMin
-        
-        for (i=indiceMin;i<indiceMax;i++){ // on parcourt la liste
-            tmp = (Objet_d_Instance) list.get(i); // on récupère l'objet
-            if (tmp.getHauteur()>hauteur) // si la hauteur est supérieure à la variable hauteur
-                hauteur=tmp.getHauteur(); // on l'a stocke
-        }
-        // si la hauteur vaut 0, ça veut dire que indice max=indice min, donc la hauteur
-        // est la même pour toute la ligne, donc ça vaut une hauteur parmi la liste
-        return hauteur == 0 ? tmp.getHauteur()  : hauteur ; 
-    }  
-
-    
-  
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -5,6 +5,7 @@
  */
 package modele;
 
+import java.awt.Color;
 import java.io.Serializable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -62,20 +63,24 @@ public class Objet_d_Instance implements Serializable {
     @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     @JoinColumn(name="MonInstance")
     protected Instance monInstance = null;
+    
+    private Color color;
  
     public Objet_d_Instance(){
         this.id= "";
         this.Hauteur=0;
         this.Largeur=0;
+        this.setColor(Color.BLACK);
     }
     
-    public Objet_d_Instance(String id, int Largeur, int Hauteur){
+    public Objet_d_Instance(String id, int Largeur, int Hauteur, Color color){
         this();
         if(Hauteur>0 && Largeur>0){
             this.id=id;
             this.Hauteur=Hauteur;
             this.Largeur=Largeur;
         }
+        this.setColor(color);
     }
 
     public int getIdGenere() {
@@ -114,6 +119,16 @@ public class Objet_d_Instance implements Serializable {
         this.monInstance = monInstance;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        if (color!=null)
+            this.color = color;
+    }
+
+    
 
     
 

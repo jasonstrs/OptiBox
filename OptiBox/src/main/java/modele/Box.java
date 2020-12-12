@@ -5,15 +5,10 @@
  */
 package modele;
 
+import java.awt.Color;
 import java.io.Serializable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 /**
  *
@@ -42,7 +37,7 @@ public class Box extends Objet_d_Instance implements Serializable {
      * @param prix Prix
      */
     public Box(String id,int l,int h,double prix){
-        super(id,l,h);
+        super(id,l,h,Color.YELLOW);
         if(prix>0)
             this.prix=prix;
         else

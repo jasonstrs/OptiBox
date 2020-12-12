@@ -5,6 +5,7 @@
  */
 package metier;
 
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,6 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import modele.Box;
 import modele.Instance;
 import modele.Objet_d_Instance;
@@ -109,7 +111,7 @@ public class DBRequests {
                             break;
                         case "Produit":
                             l.add(new Produit(resObjets.getString("IDOBJET"),
-                                    resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getInt("QUANTITE")));
+                                    resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getInt("QUANTITE"),this.getRandomColor()));
                             break;
                     }           
                 }
@@ -149,7 +151,7 @@ public class DBRequests {
                     break;
                 case "Produit":
                     l.add(new Produit(res.getString("IDOBJET"),
-                            res.getInt("LARGEUR"),res.getInt("HAUTEUR"),res.getInt("QUANTITE")));
+                            res.getInt("LARGEUR"),res.getInt("HAUTEUR"),res.getInt("QUANTITE"),this.getRandomColor()));
                     break;
             }           
                        
@@ -159,6 +161,20 @@ public class DBRequests {
         stmt.close();
         
         return l;
+    }
+    
+    
+    /**
+     * Fonction qui permet d'obtenir une couleur aléatoire
+     * @return Color
+     */
+    public Color getRandomColor(){
+        // source : https://stackoverflow.com/questions/4246351/creating-random-colour-in-java#:~:text=Random%20rand%20%3D%20new%20Random()%3B,float%20r%20%3D%20rand.
+        Random rand = new Random();
+        float r = rand.nextFloat();
+        float g = rand.nextFloat();
+        float b = rand.nextFloat();
+        return new Color(r, g, b);
     }
 
     public List<Instance> getToutesLesInstances() {

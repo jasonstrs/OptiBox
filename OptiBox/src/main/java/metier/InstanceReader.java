@@ -13,6 +13,7 @@ import io.exception.FormatFileException;
 import io.exception.NumberColumnsException;
 import io.exception.OpenFileException;
 import io.exception.ReaderException;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -127,7 +128,7 @@ public class InstanceReader {
             // TODO : Vous pouvez ajoutez chacun des produits a votre instance
             ////////////////////////////////////////////
             
-            Produit p = new Produit(elem.getIdentifiant(),elem.getLongueur(),elem.getHauteur(),elem.getQuantite());
+            Produit p = new Produit(elem.getIdentifiant(),elem.getLongueur(),elem.getHauteur(),elem.getQuantite(),Color.black);
 //            b.setIdInstance(i.getId());
             i.ajouterObjet(p);
         }
