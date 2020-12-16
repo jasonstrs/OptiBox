@@ -6,6 +6,9 @@
     <class>modele.Produit</class>
     <class>modele.Instance</class>
     <class>modele.Objet_d_Instance</class>
+    <class>modele.Solution</class>
+    <class>modele.SolutionBox</class>
+    <class>modele.PileDeProduits</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/OptiBoxDB"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

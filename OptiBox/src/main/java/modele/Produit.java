@@ -7,8 +7,17 @@ package modele;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -24,6 +33,14 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         name="quantite"
     )
     private int quantite;
+    
+    /**
+     * Pile de produits dansla solution
+     */
+    
+    @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @JoinColumn(name="MAPILE")
+    private PileDeProduits MAPILE = null;
 
     public Produit(){
         this.quantite=0;

@@ -20,10 +20,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.AccessType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 /**
  *
  * @author simon
+ * @version 1.3
  */
 @Entity
 @Access(AccessType.FIELD)
@@ -34,7 +37,7 @@ public class Instance implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; 
-
+    
     @OneToMany(mappedBy="monInstance",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private Collection<modele.Objet_d_Instance> ObjetsDeLInstance;
 
@@ -46,11 +49,15 @@ public class Instance implements Serializable {
     )
     private String nom;
        
+    @OneToOne
+    @JoinColumn(name="SOLUTION")
+    private Solution maSolution;
+    
     
     /**************************** CONSTRUCTEURS ************************/
     
     public Instance(){
-        this.id= new Long(0);
+        this.id= Long.parseLong("0");
         this.nom="Nom_Par_Défaut";
         this.ObjetsDeLInstance = new ArrayList<>();
     }
@@ -75,6 +82,24 @@ public class Instance implements Serializable {
     public void ajouterObjet(modele.Objet_d_Instance o){
         o.setMonInstance(this);
         this.ObjetsDeLInstance.add(o);
+    }
+    
+    public HashSet<Box> getBox(){
+        HashSet<Box> l = new HashSet<>();
+        for(Objet_d_Instance o : this.ObjetsDeLInstance){
+            if(o.getClass() == Box.class)
+                l.add((Box)o);
+        }
+        return l;
+    }
+    
+    public HashSet<Produit> getProduits(){
+        HashSet<Produit> l = new HashSet<>();
+        for(Objet_d_Instance o : this.ObjetsDeLInstance){
+            if(o.getClass() == Produit.class)
+                l.add((Produit)o);
+        }
+        return l;
     }
     
 
