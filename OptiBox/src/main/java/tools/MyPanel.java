@@ -124,10 +124,14 @@ public class MyPanel extends javax.swing.JPanel {
         g.drawString(text, this.getWidth()/2 -8, 40);
         g2.draw(new Line2D.Float(x, 48+y, this.getWidth(), 48+y));*/
         g.setColor(Color.black);
-        g.drawLine(0, y, this.getWidth(), y);
+        //g.drawLine(0, y, this.getWidth(), y);
+        
+        g.fillRect(0, y, this.getWidth(), 44);
+        g.setColor(Color.white);
         g.setFont(new Font("Montserrat UltraLight", Font.BOLD, 30)); 
-        g.drawString(text, this.getWidth()/2 -8, 35+y);
-        g.drawLine(0, y+48, this.getWidth(), y+48);
+        g.drawString(text, this.getWidth()/2 -8, 32+y);
+        System.out.println("here");
+        //g.drawLine(0, y+48, this.getWidth(), y+48);
     }
 
     /**
