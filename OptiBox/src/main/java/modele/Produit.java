@@ -76,6 +76,15 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
             this.quantite = quantite;
         }
     }
+
+    public PileDeProduits getMAPILE() {
+        return MAPILE;
+    }
+
+    public void setMAPILE(PileDeProduits MAPILE) {
+        this.MAPILE = MAPILE;
+    }
+    
     
     
     
