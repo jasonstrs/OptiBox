@@ -46,6 +46,15 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         this.quantite=0;
     }
     
+    public Produit(String id,int l,int h,int quantite){
+        super(id,l,h);
+        if(quantite>=0)
+            this.quantite = quantite; 
+        else{
+            quantite=0;
+        }
+    }
+    
     public Produit(String id,int l,int h,int quantite,Color color){
         super(id,l,h,color);
         if(quantite>=0)

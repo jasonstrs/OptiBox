@@ -73,6 +73,15 @@ public class Objet_d_Instance implements Serializable {
         this.setColor(Color.BLACK);
     }
     
+    public Objet_d_Instance(String id, int Largeur, int Hauteur){
+        this();
+        if(Hauteur>0 && Largeur>0){
+            this.id=id;
+            this.Hauteur=Hauteur;
+            this.Largeur=Largeur;
+        }
+    }
+    
     public Objet_d_Instance(String id, int Largeur, int Hauteur, Color color){
         this();
         if(Hauteur>0 && Largeur>0){
