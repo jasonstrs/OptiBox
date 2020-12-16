@@ -139,7 +139,7 @@ public class Objet_d_Instance implements Serializable {
 
 //    @Override
 //    public String toString() {
-//        return "Objet_d_Instance{" + "id=" + id + ", Hauteur=" + Hauteur + ", Largeur=" + Largeur + ", idInstance=" + idInstance + '}';
+//        return "Objet_d_Instance{Hauteur=" + Hauteur + ", Largeur=" + Largeur + ", Instance=" + this.monInstance.getNom() + '}';
 //    }
 
     
