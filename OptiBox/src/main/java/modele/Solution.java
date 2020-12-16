@@ -44,12 +44,12 @@ public class Solution implements Serializable {
     private double cout;
     
     @OneToMany(mappedBy="MASOLUTION",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
-    Collection<SolutionBox> mesBox;
+    Collection<SolutionBox> mesSolutionBox;
 
     /**************************** CONSTRUCTEURS ************************/
     
     public Solution() {
-        this.mesBox = new ArrayList<>();
+        this.mesSolutionBox = new ArrayList<>();
         this.cout=0;
         this.monInstance = null;
     }
@@ -57,6 +57,7 @@ public class Solution implements Serializable {
     public Solution(Instance i){
         this();
         this.monInstance = i;
+        i.setMaSolution(this);
     }
     
     /************************** GETTERS & SETTERS **********************/
@@ -85,33 +86,40 @@ public class Solution implements Serializable {
         this.cout = cout;
     }
 
-    public Collection<SolutionBox> getMesBox() {
-        return mesBox;
+    public Collection<SolutionBox> getMesSolutionBox() {
+        return mesSolutionBox;
     }
 
-    public void setMesBox(Collection<SolutionBox> mesBox) {
-        this.mesBox = mesBox;
+    public void setMesSolutionBox(Collection<SolutionBox> mesSolutionBox) {
+        this.mesSolutionBox = mesSolutionBox;
     }
 
     
     
     /**************************** METHODES *************************/
     
-    private void TestCalculerSolution(){
-       Box BoxDispo[] = (Box[]) this.monInstance.getBox().toArray();
-       int i=0, nbBox = BoxDispo.length;
+    public void TestCalculerSolution(){
+       ArrayList<Box> BoxDispo = this.monInstance.getBox();
+
+       int i=0, nbBox = BoxDispo.size();
+
        for(Produit p : this.monInstance.getProduits()){
-           
+
            ArrayList<PileDeProduits> dpp = new ArrayList<>();
-           PileDeProduits pp = new PileDeProduits();
+           
+           SolutionBox sb = new SolutionBox(BoxDispo.get(i),this,dpp);
+           
+           PileDeProduits pp = new PileDeProduits(sb);
+           
            pp.getMESPRODUITS().add(p);
+
+           pp.UpdateTaille();
            
-           dpp.add(pp);
+           dpp.add(pp);           
            
-           SolutionBox sb = new SolutionBox(BoxDispo[i++],dpp);
-           if(i>=nbBox)i=0;
+           this.mesSolutionBox.add(sb);
            
-           
+           if(i>=nbBox)i=0;                 
            
            
            
@@ -121,7 +129,7 @@ public class Solution implements Serializable {
     public double calculerCout(){
         double prixTotalSolution = 0;
         
-        for(var b : this.mesBox){
+        for(var b : this.mesSolutionBox){
             prixTotalSolution+=b.getPrix();
         }
         
@@ -150,9 +158,9 @@ public class Solution implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return this.mesBox.toString();
-    }
+//    @Override
+//    public String toString() {
+//        return this.mesSolutionBox.toString();
+//    }
     
 }

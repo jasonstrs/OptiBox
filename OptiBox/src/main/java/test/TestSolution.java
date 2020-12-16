@@ -52,9 +52,10 @@ public class TestSolution {
                 i.ajouterObjet(p5);
                 
                 Solution s = new Solution(i);
+                s.TestCalculerSolution();
                 System.out.println(s);
                 
-//                em.persist(s);
+                em.persist(s);
                 
                 et.commit();
                 System.out.println("EZ");

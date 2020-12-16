@@ -7,6 +7,10 @@ package modele;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -32,6 +37,9 @@ public class Box extends Objet_d_Instance implements Serializable {
     )
     protected double prix;
 
+    @OneToMany(mappedBy="TYPEDEBOX",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    private Set<SolutionBox> MesSolutionBox;
+    
     public Box(){
         this.prix=100;
     }
@@ -45,6 +53,7 @@ public class Box extends Objet_d_Instance implements Serializable {
      */
     public Box(String id,int l,int h,double prix){
         super(id,l,h,Color.YELLOW);
+        MesSolutionBox = new HashSet<>();
         if(prix>0)
             this.prix=prix;
         else
@@ -60,6 +69,14 @@ public class Box extends Objet_d_Instance implements Serializable {
             this.prix = prix;
         }
     }    
+
+    public Set<SolutionBox> getMesSolutionBox() {
+        return MesSolutionBox;
+    }
+
+    public void setMesSolutionBox(Set<SolutionBox> MesSolutionBox) {
+        this.MesSolutionBox = MesSolutionBox;
+    }
     
     
     

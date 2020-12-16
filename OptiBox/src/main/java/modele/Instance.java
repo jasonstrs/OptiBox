@@ -49,7 +49,7 @@ public class Instance implements Serializable {
     )
     private String nom;
        
-    @OneToOne
+    @OneToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     @JoinColumn(name="SOLUTION")
     private Solution maSolution;
     
@@ -84,8 +84,8 @@ public class Instance implements Serializable {
         this.ObjetsDeLInstance.add(o);
     }
     
-    public HashSet<Box> getBox(){
-        HashSet<Box> l = new HashSet<>();
+    public ArrayList<Box> getBox(){
+        ArrayList<Box> l = new ArrayList<>();
         for(Objet_d_Instance o : this.ObjetsDeLInstance){
             if(o.getClass() == Box.class)
                 l.add((Box)o);
@@ -128,6 +128,16 @@ public class Instance implements Serializable {
     public void setNom(String nom) {
         this.nom = nom;
     }    
+
+    public Solution getMaSolution() {
+        return maSolution;
+    }
+
+    public void setMaSolution(Solution maSolution) {
+        this.maSolution = maSolution;
+    }
+    
+    
     
 
     @Override

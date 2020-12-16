@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,7 +35,15 @@ public class PileDeProduits implements Serializable {
 
     /****************************** PARAMETRES ****************************/
     
+    @Column
+    (
+        name="LARGEUR"
+    )
     int largeur;
+    @Column
+    (
+        name="HAUTEUR"
+    )
     int hauteur;
     
     @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
@@ -42,13 +51,20 @@ public class PileDeProduits implements Serializable {
     private SolutionBox MABOX;
             
     @OneToMany(mappedBy="MAPILE",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
-    private LinkedList<Produit> MESPRODUITS;
+    private List<Produit> MESPRODUITS;
     
     /****************************** CONSTRUCTEURS ****************************/
     
     public PileDeProduits() {
         this.MABOX = null;
         this.MESPRODUITS = new LinkedList();
+    }
+    
+    public PileDeProduits(SolutionBox sb){
+        this();
+        MABOX = sb;
+        sb.getMesPiles().add(this);
+        this.UpdateTaille();
     }
         
     /****************************** GETTERS & SETTERS ****************************/
@@ -104,6 +120,10 @@ public class PileDeProduits implements Serializable {
      * Place le résultat dans la variable longueur
      */
     private void CalculerLargeur() {
+        if(this.MESPRODUITS.isEmpty()){
+            this.largeur = 0;
+            return;
+        }
         Produit p = this.MESPRODUITS.get(0);
         if(p==null)this.largeur = 0;
         else this.largeur = p.getLargeur();
@@ -114,6 +134,10 @@ public class PileDeProduits implements Serializable {
      * Place le résultat dans la variable hauteur
      */
     private void CalculerHauteur() {
+        if(this.MESPRODUITS.isEmpty()){
+            this.hauteur = 0;
+            return;
+        }
         int h = 0;
         for(Produit p : this.MESPRODUITS)
             h+=p.getHauteur();
@@ -136,6 +160,12 @@ public class PileDeProduits implements Serializable {
             return false;
         
         return this.MESPRODUITS.add(p);
+    }
+    
+    
+    public void UpdateTaille() {
+        this.CalculerHauteur();
+        this.CalculerLargeur();
     }
     
     @Override
@@ -162,6 +192,8 @@ public class PileDeProduits implements Serializable {
 //    public String toString() {
 //        return this.MESPRODUITS.toString();
 //    }
+
+    
 
 
     

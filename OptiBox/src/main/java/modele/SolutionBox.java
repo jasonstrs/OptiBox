@@ -21,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -28,9 +29,18 @@ import javax.persistence.OneToMany;
  * @version 1.0
  */
 @Entity
-public class SolutionBox extends Box implements Serializable {
+public class SolutionBox implements Serializable {
 
     /***************************** PARAMETRES ***************************/
+    
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected int id;
+    
+    @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @JoinColumn(name="TYPEDEBOX")
+    private Box TYPEDEBOX;
     
     @OneToMany(mappedBy="MABOX",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private List<PileDeProduits> mesPiles;
@@ -45,17 +55,17 @@ public class SolutionBox extends Box implements Serializable {
         this.mesPiles = new ArrayList<>();
     }
     
-    public SolutionBox(Box b){
+    public SolutionBox(Box b, Solution s){
         this();
-        this.Hauteur = b.getHauteur();
-        this.Largeur = b.getLargeur();
-        this.id = b.id;
-        this.prix = b.prix;
+        this.TYPEDEBOX = b;
+        b.getMesSolutionBox().add(this);
+        this.MASOLUTION = s;
+        s.getMesSolutionBox().add(this);
         
     }
     
-    public SolutionBox(Box b, ArrayList<PileDeProduits> pile){
-        this(b);
+    public SolutionBox(Box b, Solution s, ArrayList<PileDeProduits> pile){
+        this(b,s);
         if(ControlerPile(pile))
             mesPiles = pile;
         else{
@@ -76,6 +86,29 @@ public class SolutionBox extends Box implements Serializable {
         this.MASOLUTION = MASOLUTION;
     }        
 
+    public List<PileDeProduits> getMesPiles() {
+        return mesPiles;
+    }
+
+    public void setMesPiles(List<PileDeProduits> mesPiles) {
+        this.mesPiles = mesPiles;
+    }
+    
+    
+    
+    public int getLargeur(){
+        return this.TYPEDEBOX.getLargeur();
+    }
+    
+    public int getHauteur(){
+        return this.TYPEDEBOX.getHauteur();
+    }
+    
+    public double getPrix(){
+        return this.TYPEDEBOX.getPrix();
+    }
+    
+
     /****************************** METHODES ****************************/
     
     /**
@@ -95,28 +128,37 @@ public class SolutionBox extends Box implements Serializable {
         }
             
         
-        return !(largeur > this.Largeur || hauteur > this.Hauteur);        
+        return !(largeur > this.getLargeur() || hauteur > this.getHauteur());        
     }
-    
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 5;
+        hash = 31 * hash + this.id;
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SolutionBox)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        SolutionBox other = (SolutionBox) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SolutionBox other = (SolutionBox) obj;
+        if (this.id != other.id) {
             return false;
         }
         return true;
     }
+    
+
+    
+    
 
     @Override
     public String toString() {
