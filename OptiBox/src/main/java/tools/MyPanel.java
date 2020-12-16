@@ -21,7 +21,7 @@ import modele.Produit;
 public class MyPanel extends javax.swing.JPanel {
     
     private Collection<modele.Objet_d_Instance> instancesADessiner;
-    private final int scale=5;
+    private int scale=5;
     /**
      * Creates new form MyPanel
      */
@@ -37,7 +37,7 @@ public class MyPanel extends javax.swing.JPanel {
             g.setColor(Color.black);
             Font f = new Font("Montserrat Medium", Font.BOLD, 24);
             g.setFont(f);
-            g.drawString("Veuillez selectionner une instance", this.getWidth()/6, this.getHeight()/3);              
+            g.drawString("Veuillez selectionner une instance", this.getWidth()/3, this.getHeight()/3);              
         } else{  // on dessine les formes !
             dessinerEntete(g,"Box",0,5);
             dessinerInstance(g); 
@@ -117,12 +117,6 @@ public class MyPanel extends javax.swing.JPanel {
     }
     
     public void dessinerEntete(Graphics g,String text,int x,int y){
-        /*Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(8));
-        g2.draw(new Line2D.Float(x, y, this.getWidth(), y));
-        g.setFont(new Font("Montserrat UltraLight", Font.BOLD, 30)); 
-        g.drawString(text, this.getWidth()/2 -8, 40);
-        g2.draw(new Line2D.Float(x, 48+y, this.getWidth(), 48+y));*/
         g.setColor(Color.black);
         //g.drawLine(0, y, this.getWidth(), y);
         
@@ -130,8 +124,25 @@ public class MyPanel extends javax.swing.JPanel {
         g.setColor(Color.white);
         g.setFont(new Font("Montserrat UltraLight", Font.BOLD, 30)); 
         g.drawString(text, this.getWidth()/2 -8, 32+y);
-        System.out.println("here");
         //g.drawLine(0, y+48, this.getWidth(), y+48);
+    }
+    
+    /**
+     * Fonction qui permet d'augmenter le zoom sur le panel
+     * Si l'echelle a atteint 2, on ne peux pas plus zoomer
+     */
+    public void zoomPlus(){
+        if (this.scale <= 2)return;
+        this.scale--;
+    }
+    
+    /**
+     * Fonction qui permet de diminuer le zoom sur le panel
+     * Si l'echelle a atteint 9, on quitte
+     */
+    public void zoomMoins(){
+        if (this.scale >=9)return;
+        this.scale++;
     }
 
     /**

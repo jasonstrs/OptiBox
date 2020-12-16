@@ -22,16 +22,32 @@ import modele.Objet_d_Instance;
  * @author Jason
  */
 public class Accueil extends javax.swing.JFrame {
-    private Graphics g;
     private DBRequests dbr;
+    /**
+     * Instance unique de DBRequests (modèle singleton)
+     */
+    private static Accueil acc = null;
     
     /**
-     * Creates new form Accueil
+     * Permet d'utiliser le modèle singleton : 
+     * On ne peut pas instancier une Accueil, mais 
+     * seulement récupérer l'unique instance de la classe
+     * (ou la créer si elle n'existe pas)
+     * @return La seule instance de Accueil
      */
-    public Accueil() {
+    public static Accueil getInstance(){
+        if(acc == null)
+            acc = new Accueil();
+        return acc;
+    }
+    
+    /**
+     * Constructeur par défaut privé : on ne peut pas instancier cette classe
+     * Ainsi, on crée une instance, et on la partage avec ceux qui en ont besoin
+     */
+    private Accueil() {
         initComponents();
         initialisationFenetre();   
-        this.setG(this.myPanel1.getGraphics());        
         getAllInstance();
     }
     
@@ -76,13 +92,6 @@ public class Accueil extends javax.swing.JFrame {
         this.myPanel1.repaint();
     }
 
-    public Graphics getG() {
-        return g;
-    }
-
-    public void setG(Graphics g) {
-        this.g = g;
-    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -98,6 +107,10 @@ public class Accueil extends javax.swing.JFrame {
         jList_instance = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         myPanel1 = new tools.MyPanel();
+        zoom_plus = new java.awt.Label();
+        zoom_moins = new java.awt.Label();
+        label_zoom = new java.awt.Label();
+        button_resolve = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -139,7 +152,7 @@ public class Accueil extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jList_instance);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(0, 0, 280, 580);
+        jScrollPane1.setBounds(0, 0, 280, 540);
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(200, 200));
         jScrollPane2.setViewportView(myPanel1);
@@ -151,6 +164,46 @@ public class Accueil extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane2);
         jScrollPane2.setBounds(380, 40, 620, 270);
+
+        zoom_plus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        zoom_plus.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 36)); // NOI18N
+        zoom_plus.setForeground(new java.awt.Color(255, 51, 51));
+        zoom_plus.setText("+");
+        zoom_plus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                zoom_plusMouseClicked(evt);
+            }
+        });
+        getContentPane().add(zoom_plus);
+        zoom_plus.setBounds(50, 570, 20, 20);
+
+        zoom_moins.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        zoom_moins.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 36)); // NOI18N
+        zoom_moins.setForeground(new java.awt.Color(255, 51, 51));
+        zoom_moins.setText("-");
+        zoom_moins.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                zoom_moinsMouseClicked(evt);
+            }
+        });
+        getContentPane().add(zoom_moins);
+        zoom_moins.setBounds(190, 570, 18, 20);
+
+        label_zoom.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 24)); // NOI18N
+        label_zoom.setForeground(new java.awt.Color(255, 51, 51));
+        label_zoom.setText("Zoom");
+        getContentPane().add(label_zoom);
+        label_zoom.setBounds(100, 540, 120, 40);
+
+        button_resolve.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 12)); // NOI18N
+        button_resolve.setText("RÉSOUDRE");
+        button_resolve.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_resolveMouseClicked(evt);
+            }
+        });
+        getContentPane().add(button_resolve);
+        button_resolve.setBounds(80, 620, 110, 40);
 
         menuBar.setBackground(java.awt.Color.red);
 
@@ -183,6 +236,33 @@ public class Accueil extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jList_instanceValueChanged
 
+    private void zoom_plusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_zoom_plusMouseClicked
+        // TODO add your handling code here:
+        this.myPanel1.zoomPlus();
+        this.myPanel1.repaint();
+    }//GEN-LAST:event_zoom_plusMouseClicked
+
+    private void zoom_moinsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_zoom_moinsMouseClicked
+        // TODO add your handling code here:
+        this.myPanel1.zoomMoins();
+        this.myPanel1.repaint();
+    }//GEN-LAST:event_zoom_moinsMouseClicked
+
+    private void button_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_resolveMouseClicked
+        // TODO add your handling code here:
+        int index = this.jList_instance.getSelectedIndex(); // on récupère l'indice qui a été selectionné
+        if (index == -1)  // si aucune instance a été selectionnée, on met un message d'erreur
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner au moins une instance pour résoudre", "Erreur", JOptionPane.ERROR_MESSAGE);
+        else {
+            //Object c = this.Liste_des_clients.getModel().getElementAt(index);
+            //new AjoutClient((Client) c);
+            System.out.println(index);
+            Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
+            new Resolve((Instance)c);
+        }
+        
+    }//GEN-LAST:event_button_resolveMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -213,19 +293,23 @@ public class Accueil extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Accueil();
+                Accueil.getInstance();
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton button_resolve;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JList<String> jList_instance;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private java.awt.Label label_zoom;
     private javax.swing.JMenuBar menuBar;
     private tools.MyPanel myPanel1;
+    private java.awt.Label zoom_moins;
+    private java.awt.Label zoom_plus;
     // End of variables declaration//GEN-END:variables
 }
