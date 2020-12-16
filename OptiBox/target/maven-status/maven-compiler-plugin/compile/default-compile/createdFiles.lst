@@ -4,10 +4,10 @@ metier\InstanceReader$InfosProduit.class
 modele\Solution_.class
 io\exception\OpenFileException.class
 test\Main.class
-modele\Instance$TypesObjets.class
 modele\Produit.class
 test\TestSolution.class
 modele\Box_.class
+view\Accueil$5.class
 io\exception\FieldNameException.class
 modele\Box.class
 view\Accueil$3.class
