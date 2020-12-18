@@ -93,6 +93,24 @@ public class SolutionBox implements Serializable {
     public void setMesPiles(List<PileDeProduits> mesPiles) {
         this.mesPiles = mesPiles;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Box getTYPEDEBOX() {
+        return TYPEDEBOX;
+    }
+
+    public void setTYPEDEBOX(Box TYPEDEBOX) {
+        this.TYPEDEBOX = TYPEDEBOX;
+    }
+    
+    
     
     
     

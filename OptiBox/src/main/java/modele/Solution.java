@@ -58,7 +58,7 @@ public class Solution implements Serializable {
         this();
         this.monInstance = i;
         i.setMaSolution(this);
-    }
+    }        
     
     /************************** GETTERS & SETTERS **********************/
     public Long getId() {
@@ -110,6 +110,8 @@ public class Solution implements Serializable {
            SolutionBox sb = new SolutionBox(BoxDispo.get(i),this,dpp);
            
            PileDeProduits pp = new PileDeProduits(sb);
+            
+           p.setMAPILE(pp);
            
            pp.getMESPRODUITS().add(p);
 
