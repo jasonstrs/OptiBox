@@ -1,5 +1,6 @@
 package modele;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.sql.Array;
 import java.util.ArrayDeque;
@@ -102,27 +103,36 @@ public class Solution implements Serializable {
        ArrayList<Box> BoxDispo = this.monInstance.getBox();
 
        int i=0, nbBox = BoxDispo.size();
+       
+       Produit p1 = new Produit("P2541",20,80,10,Color.red);
+       boolean flag=false;
 
        for(Produit p : this.monInstance.getProduits()){
 
            ArrayList<PileDeProduits> dpp = new ArrayList<>();
            
            SolutionBox sb = new SolutionBox(BoxDispo.get(i),this,dpp);
+           System.out.println("1.TAILLE PILE ACTUELLE / "+dpp.size());
            
+           // le constructeur ci dessous ajoute la pile dans les piles de la solution
+           // il ne faut donc pas ré ajouter la pile dans la liste des piles
            PileDeProduits pp = new PileDeProduits(sb);
-            
            p.setMAPILE(pp);
-           
            pp.getMESPRODUITS().add(p);
+           
+           if (!flag){
+               flag=true;
+               p.setMAPILE(pp);
+               pp.getMESPRODUITS().add(p1);
+           }
 
            pp.UpdateTaille();
-           
-           dpp.add(pp);           
+           // dpp.add(pp);   NON, ON NE RÉ-AJOUTE PAS LA PILE DANS LES PILES
            
            //this.mesSolutionBox.add(sb);
            
            if(i>=nbBox)i=0;                 
-           
+           System.out.println("TAILLE PILE : "+pp.getMESPRODUITS().size());
            
            
        }

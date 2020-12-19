@@ -19,7 +19,7 @@ import modele.*;
 public class ResolvePanel extends javax.swing.JPanel {
 
     private Solution s;
-    private int scale=5;
+    private int scale=1;
     /**
      * Creates new form ResolvePanel
      */
@@ -37,7 +37,7 @@ public class ResolvePanel extends javax.swing.JPanel {
             Box box;
             int x=0,y=0,maxHeight=0;
             final int largeurPanel = this.getWidth();
-            System.out.println("SIZE : "+this.s.getMesSolutionBox().size());
+            
             for (SolutionBox sb : this.s.getMesSolutionBox()){
                 box=sb.getTYPEDEBOX();
                 g.setColor(Color.yellow);
@@ -48,6 +48,10 @@ public class ResolvePanel extends javax.swing.JPanel {
                     maxHeight=0;
                 }
                 g.fillRect(x, y, box.getLargeur()/scale, box.getHauteur()/scale);
+                // x : position de la box en x
+                // y : position de la box en y
+                dessinerProduits(sb,box,g,x,y+box.getHauteur()/scale);
+                
                 x+=box.getLargeur()/scale+20;
                 if (box.getHauteur()/scale>maxHeight)
                         maxHeight=box.getHauteur()/scale;
@@ -56,6 +60,21 @@ public class ResolvePanel extends javax.swing.JPanel {
             Dimension dimPanel = new Dimension(this.getWidth()-20,y);
             this.setPreferredSize(dimPanel);
             this.revalidate();
+        }
+    }
+    
+    private void dessinerProduits(SolutionBox sb, Box box, Graphics g,int x,int y){
+        int positionEnX=x;
+        int positionEnY=y;
+        
+        for (PileDeProduits pp : sb.getMesPiles()){
+            for (Produit produit : pp.getMESPRODUITS()){
+                g.setColor(produit.getColor());
+                g.fillRect(positionEnX, positionEnY-produit.getHauteur()/scale, produit.getLargeur()/scale, produit.getHauteur()/scale);
+                positionEnY-=produit.getHauteur()/scale+1;
+            }
+            positionEnY=y;
+            positionEnX=x+pp.getLargeur()/scale;
         }
     }
 
