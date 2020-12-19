@@ -119,7 +119,7 @@ public class Solution implements Serializable {
            
            dpp.add(pp);           
            
-           this.mesSolutionBox.add(sb);
+           //this.mesSolutionBox.add(sb);
            
            if(i>=nbBox)i=0;                 
            

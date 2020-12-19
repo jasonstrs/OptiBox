@@ -7,11 +7,12 @@ package view;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import metier.DBRequests;
+import modele.Box;
 import modele.Instance;
+import modele.Produit;
+import modele.Solution;
 
 
 /**
@@ -34,11 +35,13 @@ public class Resolve extends javax.swing.JFrame {
     
     /**
      * Creates new form Resolve
+     * @param i : Instance i à afficher
      */
     public Resolve(Instance i) {
         this();
         this.nom_instance_label.setText("Instance : "+i.getNom());
         this.nom_instance_label.setLocation(dimEcran.width/2, 15);
+        getSolution(i);
     }
     
     
@@ -59,10 +62,60 @@ public class Resolve extends javax.swing.JFrame {
      */
     private void initialisationPanel(){
         // on ajuste la taille du panel
-        Dimension dimPanel = new Dimension(this.getWidth()-40,100); // on enlève 40 pour pouvoir centrer plus bas
+        /*Dimension dimPanel = new Dimension(this.getWidth()-40,100); // on enlève 40 pour pouvoir centrer plus bas
         this.resolvePanel1.setPreferredSize(dimPanel);
         this.resolvePanel1.setLocation(20, 30); // on le place au centre de la page, donc 20 de chaque côté à une hauteur de 30
-        this.resolvePanel1.revalidate();
+        this.resolvePanel1.revalidate();*/
+        
+        // on place le Scroll
+        this.scroll_solution.setLocation(12, 80); // POSITION : x=12 ; y=80
+        
+        // on lui met des dimensions
+        Dimension dimScroll = new Dimension(this.getWidth()-40,this.getHeight()- 140); // on met en place les dimensions du scroll
+        this.scroll_solution.setSize(dimScroll);
+    }
+    
+    private void getSolution(Instance i){
+        Solution s = getSolutionTest();
+        try {
+            dbr = DBRequests.getInstance();
+           // Solution s = dbr.getSolutionIDFromInstance(i);
+            this.resolvePanel1.setSolution(s);
+            this.resolvePanel1.repaint();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "A FAIRE !!!!!!!!!!!", "Erreur de chargement", HEIGHT);
+            this.dispose();
+        }    
+    }
+    
+    
+    private Solution getSolutionTest(){
+        Box b1 = new Box("B00",200,125,300);
+        Box b2 = new Box("B01",400,60,100);
+        Box b3 = new Box("B02",600,150,250);             
+
+        System.out.println("On crée les 3 Box");
+
+        Produit p1 = new Produit("P00",50,10,5);
+        Produit p2 = new Produit("P01",30,10,1);
+        Produit p3 = new Produit("P02",60,60,3);
+        Produit p4 = new Produit("P03",80,20,7);
+        Produit p5 = new Produit("P04",20,60,2);
+
+        Instance i = new Instance("Instance_Test1");
+
+        i.ajouterObjet(b1);
+        i.ajouterObjet(b2);
+        i.ajouterObjet(b3);
+        i.ajouterObjet(p1);
+        i.ajouterObjet(p2);
+        i.ajouterObjet(p3);
+        i.ajouterObjet(p4);
+        i.ajouterObjet(p5);
+
+        Solution s = new Solution(i);
+        s.TestCalculerSolution();
+        return s;
     }
 
     /**
@@ -78,6 +131,7 @@ public class Resolve extends javax.swing.JFrame {
         zoom_plus = new javax.swing.JLabel();
         zoom_moins = new javax.swing.JLabel();
         nom_instance_label = new javax.swing.JLabel();
+        scroll_solution = new javax.swing.JScrollPane();
         resolvePanel1 = new tools.ResolvePanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -98,6 +152,11 @@ public class Resolve extends javax.swing.JFrame {
         zoom_plus.setForeground(new java.awt.Color(255, 51, 51));
         zoom_plus.setText("+");
         zoom_plus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        zoom_plus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                zoom_plusMouseClicked(evt);
+            }
+        });
         getContentPane().add(zoom_plus);
         zoom_plus.setBounds(10, 39, 22, 23);
 
@@ -105,27 +164,24 @@ public class Resolve extends javax.swing.JFrame {
         zoom_moins.setForeground(new java.awt.Color(255, 51, 51));
         zoom_moins.setText("-");
         zoom_moins.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        zoom_moins.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                zoom_moinsMouseClicked(evt);
+            }
+        });
         getContentPane().add(zoom_moins);
         zoom_moins.setBounds(125, 40, 14, 21);
 
         nom_instance_label.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 24)); // NOI18N
         nom_instance_label.setText("jLabel1");
         getContentPane().add(nom_instance_label);
-        nom_instance_label.setBounds(427, 10, 210, 30);
+        nom_instance_label.setBounds(427, 10, 390, 30);
 
-        javax.swing.GroupLayout resolvePanel1Layout = new javax.swing.GroupLayout(resolvePanel1);
-        resolvePanel1.setLayout(resolvePanel1Layout);
-        resolvePanel1Layout.setHorizontalGroup(
-            resolvePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 920, Short.MAX_VALUE)
-        );
-        resolvePanel1Layout.setVerticalGroup(
-            resolvePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 280, Short.MAX_VALUE)
-        );
+        resolvePanel1.setLayout(null);
+        scroll_solution.setViewportView(resolvePanel1);
 
-        getContentPane().add(resolvePanel1);
-        resolvePanel1.setBounds(10, 80, 920, 280);
+        getContentPane().add(scroll_solution);
+        scroll_solution.setBounds(40, 80, 300, 190);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -135,6 +191,18 @@ public class Resolve extends javax.swing.JFrame {
         // ré afficher la page Accueil quand la page resolve se ferme
         Accueil.getInstance().setVisible(true);
     }//GEN-LAST:event_formWindowClosing
+
+    private void zoom_plusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_zoom_plusMouseClicked
+        // TODO add your handling code here:
+        this.resolvePanel1.zoomPlus();
+        this.resolvePanel1.repaint();
+    }//GEN-LAST:event_zoom_plusMouseClicked
+
+    private void zoom_moinsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_zoom_moinsMouseClicked
+        // TODO add your handling code here:
+        this.resolvePanel1.zoomMoins();
+        this.resolvePanel1.repaint();
+    }//GEN-LAST:event_zoom_moinsMouseClicked
 
     /**
      * @param args the command line arguments
@@ -174,6 +242,7 @@ public class Resolve extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel nom_instance_label;
     private tools.ResolvePanel resolvePanel1;
+    private javax.swing.JScrollPane scroll_solution;
     private javax.swing.JLabel zoom_label;
     private javax.swing.JLabel zoom_moins;
     private javax.swing.JLabel zoom_plus;

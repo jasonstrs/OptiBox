@@ -87,6 +87,7 @@ public class MyPanel extends javax.swing.JPanel {
                         // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 20
                         y+=maxHeight+20;
                         x=0; // on remet x à 0
+                        maxHeight=0;
                     }
                     g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
                     g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
