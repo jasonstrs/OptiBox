@@ -71,7 +71,7 @@ public class ResolvePanel extends javax.swing.JPanel {
             for (Produit produit : pp.getMESPRODUITS()){
                 g.setColor(produit.getColor());
                 g.fillRect(positionEnX, positionEnY-produit.getHauteur()/scale, produit.getLargeur()/scale, produit.getHauteur()/scale);
-                positionEnY-=produit.getHauteur()/scale+1;
+                positionEnY-=produit.getHauteur()/scale;
             }
             positionEnY=y;
             positionEnX=x+pp.getLargeur()/scale;

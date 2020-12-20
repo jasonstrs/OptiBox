@@ -54,15 +54,15 @@ public class TestSolution {
                 Solution s = new Solution(i);
                 s.TestCalculerSolution();
                 System.out.println(s);
+                System.out.println(s.getMesSolutionBox().size());
+                
                 
                 em.persist(s);
                 
                 et.commit();
-                System.out.println("EZ");
             } 
             catch (Exception ex) {
                 System.out.println(ex);
-                System.out.println("AAAAAAAAAh");
                 et.rollback();
             }
         }
