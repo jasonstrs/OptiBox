@@ -47,6 +47,13 @@ public class InstanceReader {
      * L'entete des colonnes pour la lecture des produits
      */
     private static final String[] HEADER_PRODUIT = new String[]{"Id produit", "Longueur", "Hauteur", "Quantite"};
+    
+    /**
+     * cet attribut permet d'attribuer un numéro de groupe commun à tous les produits 
+     * Il permet de gérer la quantité, si un produit à une quantité de 10, 10 produits auront le même groupe
+     */
+    public static int groupe; 
+   
 
     /**
      * Constructeur par donnee du chemin du fichier d'instance.
@@ -127,10 +134,14 @@ public class InstanceReader {
             ////////////////////////////////////////////
             // TODO : Vous pouvez ajoutez chacun des produits a votre instance
             ////////////////////////////////////////////
+            groupe++; // on incrémente le produit à chaque nouveau produit
             
-            Produit p = new Produit(elem.getIdentifiant(),elem.getLongueur(),elem.getHauteur(),elem.getQuantite(),Color.black);
-//            b.setIdInstance(i.getId());
-            i.ajouterObjet(p);
+            for (int j=1;j<=elem.getQuantite();j++){
+                Produit p = new Produit(elem.getIdentifiant()+"-"+j,elem.getLongueur(),elem.getHauteur(),elem.getQuantite(),Color.black,groupe);
+                //b.setIdInstance(i.getId());
+                i.ajouterObjet(p);  
+            }
+            
         }
         return i;
     }

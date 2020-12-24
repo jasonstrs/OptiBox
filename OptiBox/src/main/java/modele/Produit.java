@@ -34,6 +34,13 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
     )
     private int quantite;
     
+    @Column
+    (
+        name="groupe"
+    )
+    private int groupe; // cet attribut permet de rassembler les produits identiques pour gérer la quantité
+                        // par exemple, si un produit à une quantité de 10, 10 produits de ce type auront le même groupe
+    
     /**
      * Pile de produits dansla solution
      */
@@ -43,25 +50,35 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
     private PileDeProduits MAPILE = null;
 
     public Produit(){
-        this.quantite=0;
+        this.quantite=1;
     }
     
     public Produit(String id,int l,int h,int quantite){
         super(id,l,h);
-        if(quantite>=0)
+        if(quantite>=1)
             this.quantite = quantite; 
         else{
-            quantite=0;
+            quantite=1;
         }
     }
     
     public Produit(String id,int l,int h,int quantite,Color color){
         super(id,l,h,color);
-        if(quantite>=0)
+        if(quantite>=1)
             this.quantite = quantite; 
         else{
-            quantite=0;
+            quantite=1;
         }
+    }
+    
+    public Produit(String id,int l,int h,int quantite,Color color,int groupe){
+        super(id,l,h,color);
+        if(quantite>=1)
+            this.quantite = quantite; 
+        else{
+            quantite=1;
+        }
+        this.groupe=groupe;
     }
     
         /****************************** METHODES ****************************/

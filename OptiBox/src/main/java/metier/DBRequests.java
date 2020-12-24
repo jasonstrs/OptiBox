@@ -94,12 +94,14 @@ public class DBRequests {
             ToutesLesInstances.clear();
             requete = "SELECT * FROM INSTANCE c ORDER BY NOM";
             ResultSet res;
+            int compteur=0; // permet de gérer la quantité avec la même couleur
+            Color c=null;
 
             Statement stmt = conn.createStatement();
             res = stmt.executeQuery(requete);
             while (res.next()) {
                 Long ID = res.getLong("ID");
-                String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o, INSTANCE i WHERE i.ID = o.MONINSTANCE AND i.ID = ?";
+                String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o, INSTANCE i WHERE i.ID = o.MONINSTANCE AND i.ID = ? ORDER BY o.dtype, o.groupe, o.idobjet";
                 ResultSet resObjets;
 
                 PreparedStatement pstmtObjets = conn.prepareStatement(requeteObjets);
@@ -113,8 +115,13 @@ public class DBRequests {
                                     resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getFloat("PRIX")));
                             break;
                         case "Produit":
+                            if (compteur == 0){ // on regarde si on a dessiné assez de quantité d'un produit, si oui
+                                compteur=resObjets.getInt("QUANTITE"); // on enregistre le nombre de produit qui ont la même couleur
+                                c=this.getRandomColor(); // on génère une couleur pour ces produits
+                            }
                             l.add(new Produit(resObjets.getString("IDOBJET"),
-                                    resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getInt("QUANTITE"),this.getRandomColor()));
+                                    resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getInt("QUANTITE"),c,resObjets.getInt("GROUPE")));
+                            compteur--; // on ajoute le produit puis on décremente, le compteur car on a enregistré 1 produit sur toute la quantité
                             break;
                     }           
                 }

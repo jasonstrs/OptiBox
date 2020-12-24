@@ -57,7 +57,7 @@ public class ResolvePanel extends javax.swing.JPanel {
                         maxHeight=box.getHauteur()/scale;
             }
             // on ajuste la hauteur du panel
-            Dimension dimPanel = new Dimension(this.getWidth()-20,y);
+            Dimension dimPanel = new Dimension(this.getWidth()-20,y+maxHeight+10);
             this.setPreferredSize(dimPanel);
             this.revalidate();
         }
