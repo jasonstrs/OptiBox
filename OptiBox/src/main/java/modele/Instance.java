@@ -93,8 +93,8 @@ public class Instance implements Serializable {
         return l;
     }
     
-    public HashSet<Produit> getProduits(){
-        HashSet<Produit> l = new HashSet<>();
+    public ArrayList<Produit> getProduits(){
+        ArrayList<Produit> l = new ArrayList<>();
         for(Objet_d_Instance o : this.ObjetsDeLInstance){
             if(o.getClass() == Produit.class)
                 l.add((Produit)o);
