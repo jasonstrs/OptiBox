@@ -1,5 +1,6 @@
 package modele;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.sql.Array;
 import java.util.ArrayDeque;
@@ -102,6 +103,8 @@ public class Solution implements Serializable {
        ArrayList<Box> BoxDispo = this.monInstance.getBox();
 
        int i=0, nbBox = BoxDispo.size();
+       
+       boolean flag=false;
 
        for(Produit p : this.monInstance.getProduits()){
 
@@ -109,21 +112,36 @@ public class Solution implements Serializable {
            
            SolutionBox sb = new SolutionBox(BoxDispo.get(i),this,dpp);
            
+           // le constructeur ci dessous ajoute la pile dans les piles de la solution
+           // il ne faut donc pas ré ajouter la pile dans la liste des piles
            PileDeProduits pp = new PileDeProduits(sb);
-            
            p.setMAPILE(pp);
-           
            pp.getMESPRODUITS().add(p);
+           
+           if (!flag){ // si c'est la première fois qu'on passe dans le for
+               flag=true;
+               Produit p1 = new Produit("P2541",20,80,10,Color.red);
+               Produit p2 = new Produit("P2541",50,30,10,Color.blue);
+               Produit p3 = new Produit("P2541",40,40,10,Color.green);
+               
+               p1.setMAPILE(pp);
+               pp.getMESPRODUITS().add(p1);
+               
+               PileDeProduits pp2 = new PileDeProduits(sb);
+               p2.setMAPILE(pp2);
+               p3.setMAPILE(pp2);
+               pp2.getMESPRODUITS().add(p2);
+               pp2.getMESPRODUITS().add(p3);
+               pp2.UpdateTaille();
+               
+           }
 
            pp.UpdateTaille();
+           // dpp.add(pp);   NON, ON NE RÉ-AJOUTE PAS LA PILE DANS LES PILES
            
-           dpp.add(pp);           
+           //this.mesSolutionBox.add(sb);
            
-           this.mesSolutionBox.add(sb);
-           
-           if(i>=nbBox)i=0;                 
-           
-           
+           if(i>=nbBox)i=0;                            
            
        }
     }

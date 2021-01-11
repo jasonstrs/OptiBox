@@ -6,7 +6,6 @@
 package view;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import static java.awt.image.ImageObserver.HEIGHT;
 import java.util.Collection;

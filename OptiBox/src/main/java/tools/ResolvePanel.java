@@ -5,8 +5,12 @@
  */
 package tools;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collection;
+import modele.*;
 
 /**
  *
@@ -14,36 +18,82 @@ import java.util.Collection;
  */
 public class ResolvePanel extends javax.swing.JPanel {
 
-    private Collection<modele.Objet_d_Instance> instancesADessiner;
-    private int scale=5;
+    private Solution s;
+    private int scale=1;
     /**
      * Creates new form ResolvePanel
      */
     public ResolvePanel() {
         initComponents();
-        this.instancesADessiner = new ArrayList<>();
     }
     
-    /************************* GETTERS ET SETTERS
-     * @return  Collection
-     ***********************/
-    public Collection getInstancesADessiner() {
-        return instancesADessiner;
+
+    
+    /************************* DESSINER ********************************/
+    @Override    
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
+        if (this.s != null){ // si il y a une solution, on l'a dessine
+            Box box;
+            int x=0,y=0,maxHeight=0;
+            final int largeurPanel = this.getWidth();
+            
+            for (SolutionBox sb : this.s.getMesSolutionBox()){
+                box=sb.getTYPEDEBOX();
+                g.setColor(Color.yellow);
+                if (x+box.getLargeur()/scale > largeurPanel){
+                    // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 20
+                    y+=maxHeight+20;
+                    x=0; // on remet x à 0
+                    maxHeight=0;
+                }
+                g.fillRect(x, y, box.getLargeur()/scale, box.getHauteur()/scale);
+                // x : position de la box en x
+                // y : position de la box en y
+                dessinerProduits(sb,box,g,x,y+box.getHauteur()/scale);
+                
+                x+=box.getLargeur()/scale+20;
+                if (box.getHauteur()/scale>maxHeight)
+                        maxHeight=box.getHauteur()/scale;
+            }
+            // on ajuste la hauteur du panel
+            Dimension dimPanel = new Dimension(this.getWidth()-20,y+maxHeight+10);
+            this.setPreferredSize(dimPanel);
+            this.revalidate();
+        }
+    }
+    
+    private void dessinerProduits(SolutionBox sb, Box box, Graphics g,int x,int y){
+        int positionEnX=x;
+        int positionEnY=y;
+        
+        for (PileDeProduits pp : sb.getMesPiles()){
+            for (Produit produit : pp.getMESPRODUITS()){
+                g.setColor(produit.getColor());
+                g.fillRect(positionEnX, positionEnY-produit.getHauteur()/scale, produit.getLargeur()/scale, produit.getHauteur()/scale);
+                positionEnY-=produit.getHauteur()/scale;
+            }
+            positionEnY=y;
+            positionEnX=x+pp.getLargeur()/scale;
+        }
     }
 
-    public void setInstancesADessiner(Collection instancesADessiner) {
-        this.instancesADessiner = instancesADessiner;
+    /************************* GETTERS ET SETTERS***********************/
+    public void setSolution(Solution s) {
+        this.s = s;
     }
     
-    
+    public Solution getSolution(){
+        return s;
+    }
+
     /****************************** METHODES ****************************/
-
     /**
      * Fonction qui permet d'augmenter le zoom sur le panel
      * Si l'echelle a atteint 2, on ne peux pas plus zoomer
      */
-    public void zoomPlus(){
-        if (this.scale <= 2)return;
+    public void zoomPlus() {
+        if (this.scale <= 1)return;
         this.scale--;
     }
     

@@ -68,6 +68,7 @@ public class MyPanel extends javax.swing.JPanel {
         Produit temp=null;
         int maxHeight=0;
         boolean flag=false; // permet de savoir si on doit dessiner l'entête des produits
+        Color c=null;
 
         // on commence par parcourir toute la liste des objets à dessiner
         for (Objet_d_Instance oI : this.instancesADessiner){
@@ -80,22 +81,25 @@ public class MyPanel extends javax.swing.JPanel {
                     y+=60;
                     flag=true;
                 }
-                g.setColor(oI.getColor()); // on attribut une couleur random
+                g.setColor(oI.getColor()); 
                 temp=(Produit)oI;
-                for (i=0;i<temp.getQuantite();i++){ // on dessine le nombre de produit suivant la quantité
-                    if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
-                        // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 20
-                        y+=maxHeight+20;
-                        x=0; // on remet x à 0
-                    }
-                    g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
-                    g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
-                    if (oI.getHauteur()/scale>maxHeight)
-                        maxHeight=oI.getHauteur()/scale;
-                    // si on sépare 2 mêmes produits, on met un petit espace
-                    // sinon, si c'était le dernier produit, on met un grand espace
-                    x+= (i==temp.getQuantite()-1)? (oI.getLargeur()/scale)+30 : (oI.getLargeur()/scale)+10;
-                } 
+                if (oI.getColor()==c && x!=0)
+                    x-=20; // si la couleur précédente est la même, on réduit l'écart entre les deux produits
+                
+                if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
+                    // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 20
+                    y+=maxHeight+20;
+                    x=0; // on remet x à 0
+                    maxHeight=0;
+                }
+                g.fillRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
+                g.drawRect(x, y, oI.getLargeur()/scale, oI.getHauteur()/scale);
+                
+                if (oI.getHauteur()/scale>maxHeight) // on sauvegarde la hauteur de la plus grande pièce en hauteur
+                    maxHeight=oI.getHauteur()/scale;
+                
+                x+=(oI.getLargeur()/scale)+30; // on modifie l'abscisse en ajoutant la largeur du produit et un espace de 30
+                c=oI.getColor(); // on sauvegarde la couleur
             } else { // si c'est une box
                 if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
                     y+=maxHeight+20;
@@ -111,7 +115,7 @@ public class MyPanel extends javax.swing.JPanel {
         }
         
         // on ajuste la hauteur du panel
-        Dimension dimPanel = new Dimension(this.getWidth()-20,y);
+        Dimension dimPanel = new Dimension(this.getWidth()-20,y+maxHeight+10);
         this.setPreferredSize(dimPanel);
         this.revalidate();
     }
