@@ -61,12 +61,6 @@ public class Resolve extends javax.swing.JFrame {
      * Fonction qui permet d'initialiser et de placer le panel sur la page
      */
     private void initialisationPanel(){
-        // on ajuste la taille du panel
-        /*Dimension dimPanel = new Dimension(this.getWidth()-40,100); // on enlève 40 pour pouvoir centrer plus bas
-        this.resolvePanel1.setPreferredSize(dimPanel);
-        this.resolvePanel1.setLocation(20, 30); // on le place au centre de la page, donc 20 de chaque côté à une hauteur de 30
-        this.resolvePanel1.revalidate();*/
-        
         // on place le Scroll
         this.scroll_solution.setLocation(12, 80); // POSITION : x=12 ; y=80
         

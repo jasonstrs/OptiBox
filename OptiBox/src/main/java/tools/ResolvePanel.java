@@ -93,7 +93,7 @@ public class ResolvePanel extends javax.swing.JPanel {
      * Si l'echelle a atteint 2, on ne peux pas plus zoomer
      */
     public void zoomPlus() {
-        if (this.scale <= 2)return;
+        if (this.scale <= 1)return;
         this.scale--;
     }
     
