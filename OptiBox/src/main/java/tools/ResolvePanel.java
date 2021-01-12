@@ -7,11 +7,13 @@ package tools;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import static java.awt.image.ImageObserver.HEIGHT;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import modele.*;
 import org.json.simple.*;
@@ -176,14 +178,21 @@ public class ResolvePanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         int positionX=evt.getX();
         int positionY=evt.getY();
+        String chaine="";
+        String chaineProduit="";
+        String puce = new String(Character.toChars(0x2B50)); // logo étoile
         
         JSONObject oObjectInTab; // variable qui va contenir l'objet qui se trouve dans chaque index
         int xmin, xmax,ymin,ymax;
         SolutionBox sb;
+        int nbProduit=0,i,j=1;
+        int key, keyPlusUn;
+        
         
         for(Iterator iterator = this.arrayJSONObject.keySet().iterator(); iterator.hasNext();) {
             // on parcourt l'objet
-            int key = (int) iterator.next();
+            key = (int) iterator.next();
+            keyPlusUn=key+1;
             oObjectInTab=(JSONObject)this.arrayJSONObject.get(key); // on recupère l'objet
 
             ymin=(int)oObjectInTab.get("ymin");
@@ -193,9 +202,22 @@ public class ResolvePanel extends javax.swing.JPanel {
             sb=(SolutionBox)oObjectInTab.get("solutionBox");
 
             if (positionX>=xmin && positionX<=xmax && positionY >=ymin && positionY<=ymax){ // c'est un clic sur une box
-                System.out.println("CLIC SUR UNE CASE §§§§§§§§§§");
-                JOptionPane.showMessageDialog(this, "On est là avec la solution "+key, "Informations complémentaires", HEIGHT);
-
+                chaine = puce+puce+"  Informations complémentaire sur la solution box n°"+keyPlusUn+"  "+puce+puce;
+                chaine+="\n--------------------------------------------------------------------------------\n";
+                chaine+="Nombre de piles : "+sb.getMesPiles().size()+"\n";
+                for (PileDeProduits pp : sb.getMesPiles())
+                    nbProduit+=pp.getMESPRODUITS().size();
+                chaine+="Nombre total de produits : "+nbProduit;
+                chaine+="\n--------------------------------------------------------------------------------\n";
+                
+                for (PileDeProduits pp : sb.getMesPiles()){
+                    chaine+="La pile n°"+j+" contient "+pp.getMESPRODUITS().size()+" produits";
+                    j++;
+                }
+                chaine+="\n--------------------------------------------------------------------------------\n";
+                chaine+="Taux de remplissage : "+sb.getTauxDeRemplissage()+" %";
+                
+                JOptionPane.showMessageDialog(this, chaine, "Informations complémentaires", JOptionPane.PLAIN_MESSAGE);
             }
              
         }

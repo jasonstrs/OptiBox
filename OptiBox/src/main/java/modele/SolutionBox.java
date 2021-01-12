@@ -148,7 +148,24 @@ public class SolutionBox implements Serializable {
         
         return !(largeur > this.getLargeur() || hauteur > this.getHauteur());        
     }
-
+    
+    /**
+     * Permet de calculer le taux de remplissage de la box en %
+     * @return la valeur du taux de remplissage en %
+     */
+    public double getTauxDeRemplissage(){
+        double taux=0;
+        double aireBox = this.getTYPEDEBOX().getHauteur()*this.getTYPEDEBOX().getLargeur();
+        
+        taux=aireBox;
+        
+        for (PileDeProduits pp : this.getMesPiles()) // on parcourt chaque pile
+            for (Produit p : pp.getMESPRODUITS()) // on parcourt chaque produit
+                taux-=(p.getHauteur()*p.getLargeur()); // on soustrait l'aire d'un produit
+        
+        taux = (aireBox-taux)*100/aireBox;
+        return taux;
+    }
     @Override
     public int hashCode() {
         int hash = 5;
