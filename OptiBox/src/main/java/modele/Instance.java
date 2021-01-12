@@ -8,7 +8,6 @@ package modele;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import javax.persistence.Access;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

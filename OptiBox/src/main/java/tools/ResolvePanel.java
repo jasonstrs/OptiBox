@@ -8,9 +8,15 @@ package tools;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import static java.awt.image.ImageObserver.HEIGHT;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import javax.swing.JOptionPane;
 import modele.*;
+import org.json.simple.*;
+
+
 
 /**
  *
@@ -20,11 +26,14 @@ public class ResolvePanel extends javax.swing.JPanel {
 
     private Solution s;
     private int scale=1;
+    private JSONObject arrayJSONObject;
+    
     /**
      * Creates new form ResolvePanel
      */
     public ResolvePanel() {
         initComponents();
+        arrayJSONObject=new JSONObject();
     }
     
 
@@ -33,9 +42,10 @@ public class ResolvePanel extends javax.swing.JPanel {
     @Override    
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
+           
         if (this.s != null){ // si il y a une solution, on l'a dessine
             Box box;
-            int x=0,y=0,maxHeight=0;
+            int x=0,y=0,maxHeight=0,index=0;
             final int largeurPanel = this.getWidth();
             
             for (SolutionBox sb : this.s.getMesSolutionBox()){
@@ -47,6 +57,8 @@ public class ResolvePanel extends javax.swing.JPanel {
                     x=0; // on remet x à 0
                     maxHeight=0;
                 }
+                remplirObjet(index, x,x+box.getLargeur()/scale, y, y+box.getHauteur()/scale,sb);
+                index++;
                 g.fillRect(x, y, box.getLargeur()/scale, box.getHauteur()/scale);
                 // x : position de la box en x
                 // y : position de la box en y
@@ -105,6 +117,33 @@ public class ResolvePanel extends javax.swing.JPanel {
         if (this.scale >=9)return;
         this.scale++;
     }
+    
+    public void remplirObjet(int index, int xmin, int xmax, int ymin, int ymax, SolutionBox sb){
+        JSONObject oJSON = new JSONObject();
+        oJSON.put("xmin", xmin);
+        oJSON.put("xmax", xmax);
+        oJSON.put("ymin", ymin);
+        oJSON.put("ymax", ymax);
+        oJSON.put("solutionBox", sb);
+
+        this.arrayJSONObject.put(index, oJSON);
+        // Output expected
+        /*{"0":{
+            "ymin":0,
+            "xmin":0,
+            "ymax":125,
+            "xmax":200,
+            "solutionBox":[modele.PileDeProduits@0, modele.PileDeProduits@0]
+            },
+            "1":{
+            "ymin":0,
+            "xmin":220,
+            "ymax":125,
+            "xmax":420,
+            "solutionBox":[modele.PileDeProduits@0]
+        }.......
+        */
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -114,6 +153,12 @@ public class ResolvePanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -126,6 +171,36 @@ public class ResolvePanel extends javax.swing.JPanel {
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+        int positionX=evt.getX();
+        int positionY=evt.getY();
+        
+        JSONObject oObjectInTab; // variable qui va contenir l'objet qui se trouve dans chaque index
+        int xmin, xmax,ymin,ymax;
+        SolutionBox sb;
+        
+        for(Iterator iterator = this.arrayJSONObject.keySet().iterator(); iterator.hasNext();) {
+            // on parcourt l'objet
+            int key = (int) iterator.next();
+            oObjectInTab=(JSONObject)this.arrayJSONObject.get(key); // on recupère l'objet
+
+            ymin=(int)oObjectInTab.get("ymin");
+            xmin=(int)oObjectInTab.get("xmin");
+            ymax=(int)oObjectInTab.get("ymax");
+            xmax=(int)oObjectInTab.get("xmax");
+            sb=(SolutionBox)oObjectInTab.get("solutionBox");
+
+            if (positionX>=xmin && positionX<=xmax && positionY >=ymin && positionY<=ymax){ // c'est un clic sur une box
+                System.out.println("CLIC SUR UNE CASE §§§§§§§§§§");
+                JOptionPane.showMessageDialog(this, "On est là avec la solution "+key, "Informations complémentaires", HEIGHT);
+
+            }
+             
+        }
+        
+    }//GEN-LAST:event_formMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

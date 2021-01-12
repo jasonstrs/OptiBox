@@ -39,8 +39,8 @@ public class Resolve extends javax.swing.JFrame {
      */
     public Resolve(Instance i) {
         this();
-        this.nom_instance_label.setText("Instance : "+i.getNom());
-        this.nom_instance_label.setLocation(dimEcran.width/2, 15);
+        this.nom_instance_label.setText("Solution instance : "+i.getNom());
+        this.nom_instance_label.setLocation(dimEcran.width/4, 15);
         getSolution(i);
     }
     
@@ -74,6 +74,9 @@ public class Resolve extends javax.swing.JFrame {
         try {
             dbr = DBRequests.getInstance();
            // Solution s = dbr.getSolutionIDFromInstance(i);
+            this.label_cout.setText("Coût : "+s.getCout()+" €");
+            this.label_cout.setLocation(dimEcran.width/2 + dimEcran.width/4, 10);
+
             this.resolvePanel1.setSolution(s);
             this.resolvePanel1.repaint();
         } catch (Exception ex) {
@@ -127,6 +130,7 @@ public class Resolve extends javax.swing.JFrame {
         nom_instance_label = new javax.swing.JLabel();
         scroll_solution = new javax.swing.JScrollPane();
         resolvePanel1 = new tools.ResolvePanel();
+        label_cout = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -169,13 +173,18 @@ public class Resolve extends javax.swing.JFrame {
         nom_instance_label.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 24)); // NOI18N
         nom_instance_label.setText("jLabel1");
         getContentPane().add(nom_instance_label);
-        nom_instance_label.setBounds(427, 10, 390, 30);
+        nom_instance_label.setBounds(410, 10, 390, 30);
 
         resolvePanel1.setLayout(null);
         scroll_solution.setViewportView(resolvePanel1);
 
         getContentPane().add(scroll_solution);
         scroll_solution.setBounds(40, 80, 300, 190);
+
+        label_cout.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 24)); // NOI18N
+        label_cout.setText("jLabel1");
+        getContentPane().add(label_cout);
+        label_cout.setBounds(770, 10, 220, 40);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -234,6 +243,7 @@ public class Resolve extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel label_cout;
     private javax.swing.JLabel nom_instance_label;
     private tools.ResolvePanel resolvePanel1;
     private javax.swing.JScrollPane scroll_solution;
