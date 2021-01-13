@@ -34,7 +34,7 @@ public class AjoutDepuisCSV {
     public static void main(String[] args) {
         
         ArrayList<Instance> LesInstances = getInstancesFromCSV("instances");
-        System.out.println(LesInstances);
+        //System.out.println(LesInstances);
         final EntityManagerFactory emf;
         emf = Persistence.createEntityManagerFactory("OPTIBOXPU");
         final EntityManager em = emf.createEntityManager();

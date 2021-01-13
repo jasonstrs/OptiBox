@@ -16,6 +16,7 @@ import io.exception.ReaderException;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Random;
 import java.util.Scanner;
 import modele.Box;
 import modele.Instance;
@@ -81,6 +82,7 @@ public class InstanceReader {
      */
     public Instance readInstance() throws ReaderException {
         Scanner scanner = null;
+        Color c=null;
         try {
             scanner = new Scanner(instanceFile);
         } catch (FileNotFoundException ex) {
@@ -135,9 +137,9 @@ public class InstanceReader {
             // TODO : Vous pouvez ajoutez chacun des produits a votre instance
             ////////////////////////////////////////////
             groupe++; // on incrémente le produit à chaque nouveau produit
-            
+            c=this.getRandomColor();
             for (int j=1;j<=elem.getQuantite();j++){
-                Produit p = new Produit(elem.getIdentifiant()+"-"+j,elem.getLongueur(),elem.getHauteur(),elem.getQuantite(),Color.black,groupe);
+                Produit p = new Produit(elem.getIdentifiant()+"-"+j,elem.getLongueur(),elem.getHauteur(),elem.getQuantite(),c,groupe);
                 //b.setIdInstance(i.getId());
                 i.ajouterObjet(p);  
             }
@@ -391,6 +393,19 @@ public class InstanceReader {
         public int getQuantite() {
             return quantite;
         }        
+    }
+    
+    /**
+     * Fonction qui permet d'obtenir une couleur aléatoire
+     * @return Color
+     */
+    public Color getRandomColor(){
+        // source : https://stackoverflow.com/questions/4246351/creating-random-colour-in-java#:~:text=Random%20rand%20%3D%20new%20Random()%3B,float%20r%20%3D%20rand.
+        Random rand = new Random();
+        float r = rand.nextFloat();
+        float g = rand.nextFloat();
+        float b = rand.nextFloat();
+        return new Color(r, g, b);
     }
 
     /**

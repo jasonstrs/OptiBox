@@ -5,9 +5,12 @@
  */
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -16,8 +19,10 @@ import javax.swing.JOptionPane;
 import metier.DBRequests;
 import modele.Box;
 import modele.Instance;
+import modele.PileDeProduits;
 import modele.Produit;
 import modele.Solution;
+import modele.SolutionBox;
 
 
 /**
@@ -42,11 +47,15 @@ public class Resolve extends javax.swing.JFrame {
      * Creates new form Resolve
      * @param i : Instance i à afficher
      */
-    public Resolve(Instance i) throws SQLException {
+    public Resolve(Solution s){
         this();
-        this.nom_instance_label.setText("Solution instance : "+i.getNom());
+        this.nom_instance_label.setText("Solution instance : "+s.getMonInstance().getNom());
         this.nom_instance_label.setLocation(dimEcran.width/4, 15);
-        getSolution(i);
+        this.label_cout.setText("Coût : "+s.getCout()+" €");
+        this.label_cout.setLocation(dimEcran.width/2 + dimEcran.width/4, 10);
+        
+        this.resolvePanel1.setSolution(s);
+        this.resolvePanel1.repaint();
     }
     
     
@@ -74,22 +83,30 @@ public class Resolve extends javax.swing.JFrame {
         this.scroll_solution.setSize(dimScroll);
     }
     
-    private void getSolution(Instance i) throws SQLException{
-        Solution s = getSolutionTest();
+    // A SUPPRIMER
+    /*private void getSolution(Instance i) {
+        Solution s=null;
+        try {
+            s = getSolutionTest();
+        } catch (SQLException ex) {
+            Logger.getLogger(Resolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if(s==null)return;
         try {
             dbr = DBRequests.getInstance();
            // Solution s = dbr.getSolutionIDFromInstance(i);
+           //        if(s==null)return;
+
             this.label_cout.setText("Coût : "+s.getCout()+" €");
             this.label_cout.setLocation(dimEcran.width/2 + dimEcran.width/4, 10);
 
             this.resolvePanel1.setSolution(s);
             this.resolvePanel1.repaint();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "A FAIRE !!!!!!!!!!!", "Erreur de chargement", HEIGHT);
+            JOptionPane.showMessageDialog(this, "Problème BDD", "Erreur de chargement", HEIGHT);
             this.dispose();
         }    
-    }
+    }*/
     
     
     private Solution getSolutionTest() throws SQLException{
@@ -112,11 +129,11 @@ public class Resolve extends javax.swing.JFrame {
                 
                 System.out.println("On crée les 3 Box");
                                 
-                Produit p1 = new Produit("P00",50,10,5,dbr.getRandomColor());
-                Produit p2 = new Produit("P01",30,10,1,dbr.getRandomColor());
-                Produit p3 = new Produit("P02",60,60,3,dbr.getRandomColor());
-                Produit p4 = new Produit("P03",80,20,7,dbr.getRandomColor());
-                Produit p5 = new Produit("P04",20,60,2,dbr.getRandomColor());
+                Produit p1 = new Produit("P00",50,10,5,Color.BLACK);
+                Produit p2 = new Produit("P01",30,10,1,Color.RED);
+                Produit p3 = new Produit("P02",60,60,3,Color.BLUE);
+                Produit p4 = new Produit("P03",80,20,7,Color.GREEN);
+                Produit p5 = new Produit("P04",20,60,2,Color.ORANGE);
 
                 Instance i = new Instance("Instance_Test1");
                 
@@ -142,12 +159,11 @@ public class Resolve extends javax.swing.JFrame {
                 et.begin();
                 
                 
-                Solution sRecupFromBDD = dbr.getSolutionFromInstance(i);
+                Solution sRecupFromBDD = dbr.getSolutionFromInstance(i,false);
                 
                 et.commit();
                 
                 return sRecupFromBDD;
-                
             } 
             catch (Exception ex) {
                 System.out.println(ex);

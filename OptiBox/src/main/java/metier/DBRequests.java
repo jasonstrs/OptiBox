@@ -118,13 +118,8 @@ public class DBRequests {
                                     resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getFloat("PRIX")));
                             break;
                         case "Produit":
-                            if (compteur == 0){ // on regarde si on a dessiné assez de quantité d'un produit, si oui
-                                compteur=resObjets.getInt("QUANTITE"); // on enregistre le nombre de produit qui ont la même couleur
-                                c=this.getRandomColor(); // on génère une couleur pour ces produits
-                            }
                             l.add(new Produit(resObjets.getString("IDOBJET"),
-                                    resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getInt("QUANTITE"),c,resObjets.getInt("GROUPE")));
-                            compteur--; // on ajoute le produit puis on décremente, le compteur car on a enregistré 1 produit sur toute la quantité
+                                    resObjets.getInt("LARGEUR"),resObjets.getInt("HAUTEUR"),resObjets.getInt("QUANTITE"),new Color(resObjets.getInt("COLOR")),resObjets.getInt("GROUPE")));
                             break;
                     }           
                 }
@@ -146,42 +141,14 @@ public class DBRequests {
         
     }
 
-    private ArrayList<Objet_d_Instance> getObjetsFromInstanceID(Long id) throws SQLException {
-        ArrayList<modele.Objet_d_Instance> l = new ArrayList<>();
-        
-        String requete;
-        ToutesLesInstances.clear();
-        requete = "SELECT * FROM OBJET_D_INSTANCE o, INSTANCE i WHERE i.ID = o.MONINSTANCE";
-        ResultSet res;
-        
-        Statement stmt = conn.createStatement();
-        res = stmt.executeQuery(requete);
-        while (res.next()) {
-            switch(res.getString("DTYPE")){
-                case "Box":
-                    l.add(new Box(res.getString("IDOBJET"),
-                            res.getInt("LARGEUR"),res.getInt("HAUTEUR"),res.getFloat("PRIX")));
-                    break;
-                case "Produit":
-                    l.add(new Produit(res.getString("IDOBJET"),
-                            res.getInt("LARGEUR"),res.getInt("HAUTEUR"),res.getInt("QUANTITE"),this.getRandomColor()));
-                    break;
-            }           
-                       
-            
-        }
-        res.close();
-        stmt.close();
-        
-        return l;
-    }
-
     /**
      * Récupère la solution liée à une instance
      * @param i l'instance dont on veut la solution
+     * @param justAVerif s'il vaut true on veut juste savoir si il y a une solution
+     *                      s'il vaut false on veut récupérer un objet solution
      * @return La solution
      */
-    public Solution getSolutionFromInstance(Instance i) throws SQLException{
+    public Solution getSolutionFromInstance(Instance i,boolean justAVerif) throws SQLException{
         int ID_Sol = -1;
         
         String requeteObjets = "SELECT * FROM SOLUTION s WHERE s.INSTANCE = ?";
@@ -203,6 +170,9 @@ public class DBRequests {
             //TODO : throw une exception
             return null;
         }
+        
+        if (justAVerif)
+            return new Solution(); // on return un objet différent de null
         
         System.out.println("La Solution de cette instance a pour id "+ID_Sol);
         
@@ -317,21 +287,6 @@ public class DBRequests {
         return lp;
     }
     
-    
-    
-    
-    /**
-     * Fonction qui permet d'obtenir une couleur aléatoire
-     * @return Color
-     */
-    public Color getRandomColor(){
-        // source : https://stackoverflow.com/questions/4246351/creating-random-colour-in-java#:~:text=Random%20rand%20%3D%20new%20Random()%3B,float%20r%20%3D%20rand.
-        Random rand = new Random();
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
-        return new Color(r, g, b);
-    }
 
     public List<Instance> getToutesLesInstances() {
         return ToutesLesInstances;
