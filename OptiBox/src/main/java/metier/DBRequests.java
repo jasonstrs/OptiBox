@@ -15,6 +15,9 @@ import java.sql.SQLNonTransientConnectionException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import modele.Box;
@@ -172,13 +175,13 @@ public class DBRequests {
         
         return l;
     }
-    
+
     /**
      * Récupère la solution liée à une instance
      * @param i l'instance dont on veut la solution
      * @return La solution
      */
-    public Solution getSolutionIDFromInstance(Instance i) throws SQLException{
+    public Solution getSolutionFromInstance(Instance i) throws SQLException{
         int ID_Sol = -1;
         
         String requeteObjets = "SELECT * FROM SOLUTION s WHERE s.INSTANCE = ?";
@@ -209,7 +212,7 @@ public class DBRequests {
     
     public Solution getSolutionFromID(int ID_Sol,Instance i) throws SQLException {
         Solution s = new Solution(i);
-        
+        System.out.println("On a l'id, on cherche la solution");
         String requeteObjets = "SELECT * FROM SOLUTIONBOX sb WHERE sb.MASOLUTION = ?";
         ResultSet resObjets;
 
@@ -220,9 +223,9 @@ public class DBRequests {
         ArrayList<SolutionBox> l = new ArrayList<>();
         while (resObjets.next()) {
             Box b = getBoxFromID(resObjets.getInt("TYPEDEBOX"));
+            if(b==null)continue;
             SolutionBox sb = new SolutionBox(b,s);
             sb.setId(resObjets.getInt("ID"));
-            
             sb.setMesPiles(getPilesSolutionBox(sb));
             
             l.add(sb);
@@ -239,7 +242,7 @@ public class DBRequests {
     private Box getBoxFromID(int id) throws SQLException {
         Box laBox = null;
         
-        String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o WHERE o.DTYPE='BOX' o.IDGENERE = ?";
+        String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o WHERE o.DTYPE LIKE 'Box' AND o.IDGENERE = ?";
         ResultSet resObjets;
 
         PreparedStatement pstmtObjets = conn.prepareStatement(requeteObjets);
@@ -255,7 +258,6 @@ public class DBRequests {
         
         if(laBox == null){
             System.out.println("Aucune Box avec cet ID");
-            //TODO : throw une exception
             return null;
         }       
         
@@ -272,7 +274,11 @@ public class DBRequests {
         pstmtObjets.setInt(1, sb.getId());
         resObjets = pstmtObjets.executeQuery();
         while (resObjets.next()) {
-                
+             
+            PileDeProduits pp = new PileDeProduits(sb);
+            pp.setMESPRODUITS(remplirPileAvecProduits(resObjets.getInt("ID")));
+            pp.UpdateTaille();
+            l.add(pp); 
              
             
         }
@@ -284,7 +290,32 @@ public class DBRequests {
     }
     
     
-    
+    private LinkedList<Produit> remplirPileAvecProduits(int idPile) throws SQLException {
+        String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o WHERE o.DTYPE LIKE 'Produit' AND o.MAPILE=?";
+        ResultSet resObjets;
+
+        PreparedStatement pstmtObjets = conn.prepareStatement(requeteObjets);
+        pstmtObjets.setInt(1, idPile);
+        resObjets = pstmtObjets.executeQuery();
+        
+        LinkedList<Produit> lp = new LinkedList<>();
+        
+        while (resObjets.next()) {
+             
+            Produit p = new Produit(resObjets.getString("IDOBJET"), resObjets.getInt("LARGEUR") , resObjets.getInt("HAUTEUR"), 1, new Color(resObjets.getInt("COLOR")), resObjets.getInt("GROUPE"));
+            lp.add(p);
+             
+  
+        }
+        resObjets.close();
+        pstmtObjets.close();
+        
+        Comparator<Produit> compareLargeur = (Produit o1, Produit o2) -> o2.getLargeur() - o1.getLargeur();
+ 
+        Collections.sort(lp, compareLargeur);
+        
+        return lp;
+    }
     
     
     
@@ -313,6 +344,8 @@ public class DBRequests {
     public String toString() {
         return "DBRequests{" + "conn=" + conn + ", ToutesLesInstances=" + ToutesLesInstances + '}';
     }
+
+  
 
 
 

@@ -166,6 +166,21 @@ public class SolutionBox implements Serializable {
         taux = (aireBox-taux)*100/aireBox;
         return taux;
     }
+
+    
+    private boolean AjouterPile(PileDeProduits p){
+        int currLargeur = 0;
+        for(PileDeProduits currPile : this.mesPiles){
+            currLargeur += currPile.getLargeur();
+        }
+                       
+        if(currLargeur + p.getLargeur() <= this.getLargeur()){
+            return this.mesPiles.add(p);                        
+        }
+                    
+        return false;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

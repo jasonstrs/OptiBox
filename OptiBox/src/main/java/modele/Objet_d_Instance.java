@@ -64,7 +64,7 @@ public class Objet_d_Instance implements Serializable {
     @JoinColumn(name="MonInstance")
     protected Instance monInstance = null;
     
-    private Color color;
+    private String color;
  
     public Objet_d_Instance(){
         this.id= "";
@@ -129,13 +129,24 @@ public class Objet_d_Instance implements Serializable {
     }
 
     public Color getColor() {
-        return color;
+        return new Color(Integer.parseInt(color));
+        
     }
 
     public void setColor(Color color) {
         if (color!=null)
-            this.color = color;
+            this.color = Integer.toString(color.getRGB());
     }
+
+    public String getIdString() {
+        return id;
+    }
+
+    public void setIdString(String id) {
+        this.id = id;
+    }
+    
+    
 
     
 

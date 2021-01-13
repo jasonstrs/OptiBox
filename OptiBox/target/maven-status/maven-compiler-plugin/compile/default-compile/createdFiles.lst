@@ -20,6 +20,7 @@ modele\Objet_d_Instance_.class
 modele\Objet_d_Instance.class
 tools\ResolvePanel.class
 modele\PileDeProduits.class
+view\Accueil$9.class
 view\Resolve.class
 io\exception\EmptyFieldException.class
 view\Accueil$2.class
@@ -37,6 +38,7 @@ modele\Solution.class
 metier\InstanceReader$Infos.class
 view\Accueil$8.class
 view\Accueil.class
+tools\ResolvePanel$1.class
 io\exception\FieldFormatException.class
 view\Accueil$1.class
 modele\SolutionBox_.class

@@ -130,6 +130,12 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
 //        return "Produit{"+ super.toString() + "quantite=" + quantite + '}';
 //    }
 
+    public void afficherID() {
+        System.out.print("\t\t\t");
+        System.out.print(this.id);
+        System.out.print("\n");
+    }
+
 
     
 }

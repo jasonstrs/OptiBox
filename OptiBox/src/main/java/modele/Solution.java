@@ -178,9 +178,30 @@ public class Solution implements Serializable {
         return true;
     }
 
-//    @Override
-//    public String toString() {
-//        return this.mesSolutionBox.toString();
-//    }
+    
+    public void afficher() {
+        
+        System.out.println("Solution : ");
+        System.out.println("{");
+        for(SolutionBox sb : this.mesSolutionBox){
+            
+            System.out.println("\tSolutionBox : \n\t{");
+            
+            for(PileDeProduits pp : sb.getMesPiles()){
+                
+                System.out.println("\t\tPileDeProduits : \n\t\t{");
+                
+                for(Produit p : pp.getMESPRODUITS()){
+                    System.out.println("\t\t\t ");                    
+                    p.afficherID();
+                    
+                }
+                
+                System.out.println("\t\t}");
+            }
+            
+            System.out.println("\t}");
+        }
+    }
     
 }

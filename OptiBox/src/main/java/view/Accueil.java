@@ -8,8 +8,11 @@ package view;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import static java.awt.image.ImageObserver.HEIGHT;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import metier.DBRequests;
@@ -186,7 +189,7 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(zoom_moins);
-        zoom_moins.setBounds(190, 570, 18, 20);
+        zoom_moins.setBounds(190, 570, 16, 20);
 
         label_zoom.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 24)); // NOI18N
         label_zoom.setForeground(new java.awt.Color(255, 51, 51));
@@ -199,6 +202,11 @@ public class Accueil extends javax.swing.JFrame {
         button_resolve.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 button_resolveMouseClicked(evt);
+            }
+        });
+        button_resolve.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_resolveActionPerformed(evt);
             }
         });
         getContentPane().add(button_resolve);
@@ -253,14 +261,22 @@ public class Accueil extends javax.swing.JFrame {
         if (index == -1)  // si aucune instance a été selectionnée, on met un message d'erreur
             JOptionPane.showMessageDialog(this, "Veuillez sélectionner au moins une instance pour résoudre", "Erreur", JOptionPane.ERROR_MESSAGE);
         else {
-            //Object c = this.Liste_des_clients.getModel().getElementAt(index);
-            //new AjoutClient((Client) c);
-            System.out.println(index);
-            Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
-            new Resolve((Instance)c);
+            try {
+                //Object c = this.Liste_des_clients.getModel().getElementAt(index);
+                //new AjoutClient((Client) c);
+                System.out.println(index);
+                Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
+                new Resolve((Instance)c);
+            } catch (SQLException ex) {
+                System.out.println("ERREUR SQL LORS DE LA RESOLUTION");
+            }
         }
         
     }//GEN-LAST:event_button_resolveMouseClicked
+
+    private void button_resolveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_resolveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_resolveActionPerformed
 
     /**
      * @param args the command line arguments
