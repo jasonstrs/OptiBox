@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import metier.DBRequests;
 import modele.Box;
 import modele.Instance;
 import modele.Produit;
@@ -60,6 +61,15 @@ public class TestSolution {
                 em.persist(s);
                 
                 et.commit();
+                
+                et.begin();
+                
+                DBRequests dbr = DBRequests.getInstance();
+                Solution sRecupFromBDD = dbr.getSolutionFromInstance(i);
+                sRecupFromBDD.afficher();
+                
+                et.commit();
+                
             } 
             catch (Exception ex) {
                 System.out.println(ex);
