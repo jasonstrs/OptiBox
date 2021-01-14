@@ -5,6 +5,7 @@
  */
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import static java.awt.image.ImageObserver.HEIGHT;
@@ -16,9 +17,11 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import metier.DBRequests;
+import modele.Box;
 import modele.Instance;
 import modele.Objet_d_Instance;
 import modele.PileDeProduits;
+import modele.Produit;
 import modele.Solution;
 import modele.SolutionBox;
 
@@ -298,12 +301,45 @@ public class Accueil extends javax.swing.JFrame {
         else {
             System.out.println(index);
             Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
-            //new Resolve((Instance)c);
-            // TESTER ALGO ET ENVOYER LA SOLUTION
+            // on lance l'algo qui renvoie une solution
+            // Solution s = ALGO
+            Solution s = test(); // SUPPRIMER LA FONCTION TEST
+            // on met en BDD
+            this.dbr.mettreSolutionEnBdd(s);
+            new Resolve(s);
         }
         
     }//GEN-LAST:event_button_resolveMouseClicked
 
+    public Solution test(){
+        Box b1 = new Box("B00",200,125,300);
+        Box b2 = new Box("B01",400,60,100);
+        Box b3 = new Box("B02",600,150,250);             
+
+        System.out.println("On crée les 3 Box");
+
+        Produit p1 = new Produit("P00",50,10,5,Color.BLACK);
+        Produit p2 = new Produit("P01",30,10,1,Color.RED);
+        Produit p3 = new Produit("P02",60,60,3,Color.BLUE);
+        Produit p4 = new Produit("P03",80,20,7,Color.GREEN);
+        Produit p5 = new Produit("P04",20,60,2,Color.ORANGE);
+
+        Instance i = new Instance("Instance_Test1");
+
+        i.ajouterObjet(b1);
+        i.ajouterObjet(b2);
+        i.ajouterObjet(b3);
+        i.ajouterObjet(p1);
+        i.ajouterObjet(p2);
+        i.ajouterObjet(p3);
+        i.ajouterObjet(p4);
+        i.ajouterObjet(p5);
+
+        Solution s = new Solution(i);
+        s.TestCalculerSolution();
+        return s;
+    }
+    
     private void button_resolveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_resolveActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_button_resolveActionPerformed
@@ -316,10 +352,13 @@ public class Accueil extends javax.swing.JFrame {
         else {
             Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
             try {
-                Solution s = this.dbr.getSolutionFromInstance((Instance)c, false);
-                new Resolve(s);
+                Solution s = this.dbr.getSolutionFromInstance((Instance)c, false); // on récupère la solution
+                if (s==null) // si pas de solution (juste une sécurité car de base le bouton est en disabled si pas de solution)
+                    JOptionPane.showMessageDialog(this, "Il n'y a pas de solution en BDD", "Erreur", JOptionPane.ERROR_MESSAGE);
+                else
+                    new Resolve(s);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Impossible de récupèrer la solution en BDD", "Erreur", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "[EREEUR SQL] Impossible d'accéder à la BDD", "Erreur", JOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
                 this.dispose();
             }

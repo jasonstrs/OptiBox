@@ -63,15 +63,10 @@ public class TestSolution {
                 
                 et.commit();
                 
-                // à utiliser uniquement pour tester
-                /*et.begin();
-                
                 DBRequests dbr = DBRequests.getInstance();
                 Solution sRecupFromBDD = dbr.getSolutionFromInstance(i,false);
                 sRecupFromBDD.afficher();
-                
-                et.commit();*/
-                
+                                
             } 
             catch (Exception ex) {
                 System.out.println(ex);

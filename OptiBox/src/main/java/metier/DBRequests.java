@@ -20,6 +20,10 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import modele.Box;
 import modele.Instance;
 import modele.Objet_d_Instance;
@@ -167,12 +171,11 @@ public class DBRequests {
         
         if(ID_Sol == -1){
             System.out.println("Aucune Solution pour cette instance");
-            //TODO : throw une exception
             return null;
         }
         
         if (justAVerif)
-            return new Solution(); // on return un objet différent de null
+            return new Solution(); // on return un objet différent de null pour dire qu'il y a une solution 
         
         System.out.println("La Solution de cette instance a pour id "+ID_Sol);
         
@@ -290,6 +293,37 @@ public class DBRequests {
 
     public List<Instance> getToutesLesInstances() {
         return ToutesLesInstances;
+    }
+    
+    /**
+     * Fonction qui permet de mettre une solution en BDD
+     * @param s solution à mettre en BDD
+     */
+    public void mettreSolutionEnBdd(Solution s){
+        final EntityManagerFactory emf;
+        emf = Persistence.createEntityManagerFactory("OPTIBOXPU");
+        final EntityManager em = emf.createEntityManager();
+        try{
+            final EntityTransaction et = em.getTransaction();
+            try{
+                et.begin();
+                em.persist(s);
+                et.commit();
+                System.out.println("Solution mise en BDD");
+            } 
+            catch (Exception ex) {
+                System.out.println(ex);
+                et.rollback();
+            }
+        }
+        finally {
+            if(em != null && em.isOpen()){
+                em.close();
+            }
+            if(emf != null && emf.isOpen()){
+                emf.close();
+            }
+        }
     }
     
     
