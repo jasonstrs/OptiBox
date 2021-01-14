@@ -181,7 +181,7 @@ public class SolutionBox implements Serializable {
         return false;
     }
     
-    @Override
+    /*@Override
     public int hashCode() {
         int hash = 5;
         hash = 31 * hash + this.id;
@@ -204,16 +204,16 @@ public class SolutionBox implements Serializable {
             return false;
         }
         return true;
-    }
+    }*/
     
 
     
     
 
-    @Override
+    /*@Override
     public String toString() {
         return this.mesPiles.toString();
-    }
+    }*/
 
     
     public void afficherPrix() {

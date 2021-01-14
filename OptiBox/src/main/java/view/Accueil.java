@@ -303,8 +303,12 @@ public class Accueil extends javax.swing.JFrame {
             Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
             // on lance l'algo qui renvoie une solution
             // Solution s = ALGO
-            Solution s = test(); // SUPPRIMER LA FONCTION TEST
+            //Solution s = test(); // SUPPRIMER LA FONCTION TEST
             // on met en BDD
+            Solution s = new Solution((Instance)c);
+            //Solution s = Solution.algorithmeSolution(i);
+            s.TestCalculerSolution();
+            s.afficher();
             this.dbr.mettreSolutionEnBdd(s);
             new Resolve(s);
         }
@@ -336,6 +340,7 @@ public class Accueil extends javax.swing.JFrame {
         i.ajouterObjet(p5);
 
         Solution s = new Solution(i);
+        //Solution s = Solution.algorithmeSolution(i);
         s.TestCalculerSolution();
         return s;
     }

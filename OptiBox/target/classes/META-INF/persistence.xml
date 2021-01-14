@@ -15,8 +15,8 @@
     <class>modele.Objet_d_Instance</class>
     <class>modele.PileDeProduits</class>
     <class>modele.Produit</class>
-    <class>modele.SolutionBox</class>
     <class>modele.Solution</class>
+    <class>modele.SolutionBox</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
   </persistence-unit>
 </persistence>
