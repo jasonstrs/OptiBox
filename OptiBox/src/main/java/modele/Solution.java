@@ -56,9 +56,12 @@ public class Solution implements Serializable {
     }
     
     public Solution(Instance i){
-        this();
-        this.monInstance = i;
+        this();                           
+        
+        this.monInstance = i;                
+        
         i.setMaSolution(this);
+        
     }        
     
     /************************** GETTERS & SETTERS **********************/
@@ -79,12 +82,8 @@ public class Solution implements Serializable {
     }
 
     public double getCout() {
-        this.calculerCout();
+        cout = this.calculerCout();
         return cout;
-    }
-
-    public void setCout(double cout) {
-        this.cout = cout;
     }
 
     public Collection<SolutionBox> getMesSolutionBox() {
@@ -93,6 +92,7 @@ public class Solution implements Serializable {
 
     public void setMesSolutionBox(Collection<SolutionBox> mesSolutionBox) {
         this.mesSolutionBox = mesSolutionBox;
+        this.calculerCout();
     }
 
     
@@ -144,6 +144,7 @@ public class Solution implements Serializable {
            if(i>=nbBox)i=0;                            
            
        }
+       this.calculerCout();
     }
     
     public double calculerCout(){
@@ -180,13 +181,14 @@ public class Solution implements Serializable {
 
     
     public void afficher() {
-        
+        this.calculerCout();
         System.out.println("Solution : ");
         System.out.println("{");
         for(SolutionBox sb : this.mesSolutionBox){
             
             System.out.println("\tSolutionBox : \n\t{");
-            
+            System.out.println("\tPrix : ");
+            sb.afficherPrix();
             for(PileDeProduits pp : sb.getMesPiles()){
                 
                 System.out.println("\t\tPileDeProduits : \n\t\t{");

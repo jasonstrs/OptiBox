@@ -215,6 +215,13 @@ public class SolutionBox implements Serializable {
         return this.mesPiles.toString();
     }
 
+    
+    public void afficherPrix() {
+        System.out.print("\t\t\t");
+        System.out.print(this.getPrix());
+        System.out.print("\n");
+    }
+
 
     
 }

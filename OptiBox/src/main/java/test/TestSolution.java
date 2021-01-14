@@ -52,12 +52,13 @@ public class TestSolution {
                 i.ajouterObjet(p4);
                 i.ajouterObjet(p5);
                 
+                
                 Solution s = new Solution(i);
                 s.TestCalculerSolution();
                 System.out.println(s);
                 System.out.println(s.getMesSolutionBox().size());
                 
-                
+                s.calculerCout();
                 em.persist(s);
                 
                 et.commit();
@@ -69,6 +70,10 @@ public class TestSolution {
                 sRecupFromBDD.afficher();
                 
                 et.commit();
+                
+                
+                System.out.println("Cout : "+sRecupFromBDD.getCout());
+                
                 
             } 
             catch (Exception ex) {
