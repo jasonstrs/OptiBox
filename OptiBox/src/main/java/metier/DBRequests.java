@@ -315,6 +315,8 @@ public class DBRequests {
                 System.out.println(ex);
                 et.rollback();
             }
+
+            
         }
         finally {
             if(em != null && em.isOpen()){

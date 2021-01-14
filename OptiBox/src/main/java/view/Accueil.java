@@ -6,6 +6,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import static java.awt.image.ImageObserver.HEIGHT;
@@ -295,6 +296,7 @@ public class Accueil extends javax.swing.JFrame {
 
     private void button_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_resolveMouseClicked
         // TODO add your handling code here:
+        this.setCursor(Cursor.WAIT_CURSOR);
         int index = this.jList_instance.getSelectedIndex(); // on récupère l'indice qui a été selectionné
         if (index == -1)  // si aucune instance a été selectionnée, on met un message d'erreur
             JOptionPane.showMessageDialog(this, "Veuillez sélectionner au moins une instance pour résoudre", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -303,11 +305,16 @@ public class Accueil extends javax.swing.JFrame {
             Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
             // on lance l'algo qui renvoie une solution
             // Solution s = ALGO
-            Solution s = test(); // SUPPRIMER LA FONCTION TEST
+//            Solution s = test(); // SUPPRIMER LA FONCTION TEST
+            Solution s = new Solution((Instance)c);
+            s.TestCalculerSolution();
+            
             // on met en BDD
             this.dbr.mettreSolutionEnBdd(s);
             new Resolve(s);
         }
+        
+        this.setCursor(Cursor.DEFAULT_CURSOR);
         
     }//GEN-LAST:event_button_resolveMouseClicked
 
