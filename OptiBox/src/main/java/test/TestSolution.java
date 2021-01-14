@@ -67,9 +67,7 @@ public class TestSolution {
                 DBRequests dbr = DBRequests.getInstance();
                 Solution sRecupFromBDD = dbr.getSolutionFromInstance(i,false);
                 sRecupFromBDD.afficher();
-                
-                et.commit();
-                
+                                
                 
                 System.out.println("Cout : "+sRecupFromBDD.getCout());
                 
