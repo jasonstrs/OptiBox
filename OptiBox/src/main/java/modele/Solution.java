@@ -6,6 +6,7 @@ import java.sql.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import javax.persistence.CascadeType;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
 
 /**
  *
@@ -156,6 +158,110 @@ public class Solution implements Serializable {
         return prixTotalSolution;
     }
     
+    static int existe(int T[], int val){
+        for(int i=0; i<T.length;i++){
+            if(val==T[i])
+              return 1;
+        }
+        return -1;
+    }
+    
+    public void algorithme(){
+        ArrayList<Box> BoxDispo = this.monInstance.getBox();
+        int i=0, nbBox = BoxDispo.size(),j,k;
+        int compteur,iref, nbProduit, tailleRestante, hauteurMax;
+        
+        int flag, flagB;
+        Produit p;
+       
+       //tri box taille
+       Collections.sort(BoxDispo,(o1,o2)->o2.getLargeur()-o1.getLargeur());
+       // parcours de tous les type de box afin de les définir comme box de référence
+       for(i=0;i<nbBox;i++){
+            Box boxRef=BoxDispo.get(i);
+            iref=i;
+           //tri produit taille 
+            ArrayList<Produit> ProduitsDispo = this.monInstance.getProduits();
+            nbProduit = ProduitsDispo.size();
+            Collections.sort(ProduitsDispo,(o1,o2)->o2.getLargeur()-o1.getLargeur());
+            compteur=0;
+            j=0;
+            
+            int[] tableauVerif=new int[nbProduit];
+            for(k=0;k<nbProduit;k++){
+                tableauVerif[k]=-1;
+            }
+            //on va parcourir tous les produits ensuitz
+            while(j<nbProduit){
+                ArrayList<PileDeProduits> dpp = new ArrayList<>();
+                p=ProduitsDispo.get(j);
+                //Si ce n'est pas le premier tour de boucle et que le produit suivant le permet
+                //on passe au format de box inférieur
+                if(compteur==1 && iref<nbBox && BoxDispo.get(iref).getLargeur()>p.getLargeur()){
+                   iref++;
+                   boxRef=BoxDispo.get(iref);
+                }
+                //demande des paramètres nécessaires
+                tailleRestante=boxRef.getLargeur();
+                hauteurMax=boxRef.getHauteur();
+                SolutionBox sb = new SolutionBox(boxRef,this,dpp);
+                //Parcourt des produits
+                flagB=0;
+                while(j<nbProduit && flagB!=1){
+                    PileDeProduits pp = new PileDeProduits(sb);
+                    p.setMAPILE(pp);
+                    if(existe(tableauVerif,j)==-1){
+                        j++;
+                    }
+                    else{
+                        //Vérification que la pile rentre
+                        if(p.getLargeur()<=tailleRestante){
+                            pp.getMESPRODUITS().add(p);
+                            tailleRestante=tailleRestante-p.getLargeur();
+                            flag=0;
+                            //on constuit des piles jusque la hauteur max
+                            while(j<nbProduit && flag !=1){
+                                j++;
+                                if(existe(tableauVerif,j)!=-1){            
+                                    p=ProduitsDispo.get(j);
+                                    if((p.getHauteur()+pp.getHauteur())<hauteurMax){
+                                        pp.getMESPRODUITS().add(p);
+                                        pp.UpdateTaille();
+                                    }
+                                    else{
+                                        pp.UpdateTaille();
+                                        flag=1;
+                                    }
+                                }
+                            }
+                        }
+                        else{ 
+                            //On vient parcourir les produits, jusqu'à trouver un produit à la bonne taille
+                            for(k=j;k<nbProduit;k++){
+                                if(!(ProduitsDispo.get(k).getLargeur()>tailleRestante||existe(tableauVerif,k)!=-1)){
+                                       p=ProduitsDispo.get(k);
+                                       if((p.getHauteur()+pp.getHauteur())<hauteurMax){
+                                            pp.getMESPRODUITS().add(p);
+                                            tableauVerif[k]=k;
+                                            pp.UpdateTaille();
+                                        }
+                                        else{
+                                            flagB=1;
+                                            break;
+                                        }
+                                }
+                                else{
+                                    flagB=1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                compteur=1;
+            }
+       }
+}
     
     
     @Override
