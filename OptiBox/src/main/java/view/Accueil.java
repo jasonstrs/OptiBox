@@ -5,6 +5,7 @@
  */
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import static java.awt.image.ImageObserver.HEIGHT;
@@ -16,8 +17,13 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import metier.DBRequests;
+import modele.Box;
 import modele.Instance;
 import modele.Objet_d_Instance;
+import modele.PileDeProduits;
+import modele.Produit;
+import modele.Solution;
+import modele.SolutionBox;
 
 /**
  *
@@ -68,6 +74,8 @@ public class Accueil extends javax.swing.JFrame {
         Dimension dimScroll = new Dimension(dim.width-30-this.jList_instance.getWidth(),dim.height-150);
         this.jScrollPane2.setSize(dimScroll);
         this.setLocation(0, 0);
+        this.button_sol_BDD.setEnabled(false);
+        this.button_resolve.setEnabled(false);
     }
         
     private void getAllInstance(){
@@ -93,6 +101,16 @@ public class Accueil extends javax.swing.JFrame {
         this.myPanel1.setInstancesADessiner(ObjectsDeLInstance);
         this.myPanel1.repaint();
     }
+    
+    public boolean checkIfEnableBDDButton(Instance i){
+        try {
+            if(dbr.getSolutionFromInstance(i,true) == null)
+                return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true; // s'il y a une solution en BDD c'est good !
+    }
 
     
     /**
@@ -113,6 +131,7 @@ public class Accueil extends javax.swing.JFrame {
         zoom_moins = new java.awt.Label();
         label_zoom = new java.awt.Label();
         button_resolve = new javax.swing.JButton();
+        button_sol_BDD = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -189,7 +208,7 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(zoom_moins);
-        zoom_moins.setBounds(190, 570, 16, 20);
+        zoom_moins.setBounds(190, 570, 18, 20);
 
         label_zoom.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 24)); // NOI18N
         label_zoom.setForeground(new java.awt.Color(255, 51, 51));
@@ -210,7 +229,22 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(button_resolve);
-        button_resolve.setBounds(80, 620, 110, 40);
+        button_resolve.setBounds(10, 610, 110, 40);
+
+        button_sol_BDD.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 12)); // NOI18N
+        button_sol_BDD.setText("SOLUTION BDD");
+        button_sol_BDD.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_sol_BDDMouseClicked(evt);
+            }
+        });
+        button_sol_BDD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_sol_BDDActionPerformed(evt);
+            }
+        });
+        getContentPane().add(button_sol_BDD);
+        button_sol_BDD.setBounds(130, 610, 140, 40);
 
         menuBar.setBackground(java.awt.Color.red);
 
@@ -231,7 +265,7 @@ public class Accueil extends javax.swing.JFrame {
 
     private void jList_instanceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList_instanceMouseClicked
         // TODO add your handling code here:
-        
+      
     }//GEN-LAST:event_jList_instanceMouseClicked
 
     private void jList_instanceValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList_instanceValueChanged
@@ -240,6 +274,10 @@ public class Accueil extends javax.swing.JFrame {
             int index = this.jList_instance.getSelectedIndex(); // on récupère l'index qui a été choisi dans la liste
             Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
             afficherInstance((Instance)c); // on caste l'objet et on l'affiche
+            this.button_resolve.setEnabled(true); // on active le bouton résoudre
+            this.button_sol_BDD.setEnabled(false); // on désactive le bouton résoudre en BDD
+            if(this.checkIfEnableBDDButton((Instance)c))
+                this.button_sol_BDD.setEnabled(true); // si il y a une solution en BDD, on peut la prendre
         }
     }//GEN-LAST:event_jList_instanceValueChanged
 
@@ -261,22 +299,75 @@ public class Accueil extends javax.swing.JFrame {
         if (index == -1)  // si aucune instance a été selectionnée, on met un message d'erreur
             JOptionPane.showMessageDialog(this, "Veuillez sélectionner au moins une instance pour résoudre", "Erreur", JOptionPane.ERROR_MESSAGE);
         else {
-            try {
-                //Object c = this.Liste_des_clients.getModel().getElementAt(index);
-                //new AjoutClient((Client) c);
-                System.out.println(index);
-                Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
-                new Resolve((Instance)c);
-            } catch (SQLException ex) {
-                System.out.println("ERREUR SQL LORS DE LA RESOLUTION");
-            }
+            System.out.println(index);
+            Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
+            // on lance l'algo qui renvoie une solution
+            // Solution s = ALGO
+            Solution s = test(); // SUPPRIMER LA FONCTION TEST
+            // on met en BDD
+            this.dbr.mettreSolutionEnBdd(s);
+            new Resolve(s);
         }
         
     }//GEN-LAST:event_button_resolveMouseClicked
 
+    public Solution test(){
+        Box b1 = new Box("B00",200,125,300);
+        Box b2 = new Box("B01",400,60,100);
+        Box b3 = new Box("B02",600,150,250);             
+
+        System.out.println("On crée les 3 Box");
+
+        Produit p1 = new Produit("P00",50,10,5,Color.BLACK);
+        Produit p2 = new Produit("P01",30,10,1,Color.RED);
+        Produit p3 = new Produit("P02",60,60,3,Color.BLUE);
+        Produit p4 = new Produit("P03",80,20,7,Color.GREEN);
+        Produit p5 = new Produit("P04",20,60,2,Color.ORANGE);
+
+        Instance i = new Instance("Instance_Test1");
+
+        i.ajouterObjet(b1);
+        i.ajouterObjet(b2);
+        i.ajouterObjet(b3);
+        i.ajouterObjet(p1);
+        i.ajouterObjet(p2);
+        i.ajouterObjet(p3);
+        i.ajouterObjet(p4);
+        i.ajouterObjet(p5);
+
+        Solution s = new Solution(i);
+        s.TestCalculerSolution();
+        return s;
+    }
+    
     private void button_resolveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_resolveActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_button_resolveActionPerformed
+
+    private void button_sol_BDDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_sol_BDDMouseClicked
+        // TODO add your handling code here:
+        int index = this.jList_instance.getSelectedIndex(); // on récupère l'indice qui a été selectionné
+        if (index == -1)  // si aucune instance a été selectionnée, on met un message d'erreur
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner au moins une instance pour résoudre", "Erreur", JOptionPane.ERROR_MESSAGE);
+        else {
+            Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
+            try {
+                Solution s = this.dbr.getSolutionFromInstance((Instance)c, false); // on récupère la solution
+                if (s==null) // si pas de solution (juste une sécurité car de base le bouton est en disabled si pas de solution)
+                    JOptionPane.showMessageDialog(this, "Il n'y a pas de solution en BDD", "Erreur", JOptionPane.ERROR_MESSAGE);
+                else
+                    new Resolve(s);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "[EREEUR SQL] Impossible d'accéder à la BDD", "Erreur", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+                this.dispose();
+            }
+        }
+    }//GEN-LAST:event_button_sol_BDDMouseClicked
+
+    private void button_sol_BDDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_sol_BDDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_sol_BDDActionPerformed
 
     /**
      * @param args the command line arguments
@@ -315,6 +406,7 @@ public class Accueil extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button_resolve;
+    private javax.swing.JButton button_sol_BDD;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JList<String> jList_instance;
     private javax.swing.JMenu jMenu1;

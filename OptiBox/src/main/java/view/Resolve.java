@@ -5,9 +5,12 @@
  */
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -16,8 +19,10 @@ import javax.swing.JOptionPane;
 import metier.DBRequests;
 import modele.Box;
 import modele.Instance;
+import modele.PileDeProduits;
 import modele.Produit;
 import modele.Solution;
+import modele.SolutionBox;
 
 
 /**
@@ -40,13 +45,17 @@ public class Resolve extends javax.swing.JFrame {
     
     /**
      * Creates new form Resolve
-     * @param i : Instance i à afficher
+     * @param s : Solution s à afficher
      */
-    public Resolve(Instance i) throws SQLException {
+    public Resolve(Solution s){
         this();
-        this.nom_instance_label.setText("Solution instance : "+i.getNom());
+        this.nom_instance_label.setText("Solution instance : "+s.getMonInstance().getNom());
         this.nom_instance_label.setLocation(dimEcran.width/4, 15);
-        getSolution(i);
+        this.label_cout.setText("Coût : "+s.getCout()+" €");
+        this.label_cout.setLocation(dimEcran.width/2 + dimEcran.width/4, 10);
+        
+        this.resolvePanel1.setSolution(s);
+        this.resolvePanel1.repaint();
     }
     
     
@@ -73,103 +82,7 @@ public class Resolve extends javax.swing.JFrame {
         Dimension dimScroll = new Dimension(this.getWidth()-40,this.getHeight()- 140); // on met en place les dimensions du scroll
         this.scroll_solution.setSize(dimScroll);
     }
-    
-    private void getSolution(Instance i) throws SQLException{
-        Solution s = getSolutionTest();
-        if(s==null)return;
-        try {
-            dbr = DBRequests.getInstance();
-           // Solution s = dbr.getSolutionIDFromInstance(i);
-            this.label_cout.setText("Coût : "+s.getCout()+" €");
-            this.label_cout.setLocation(dimEcran.width/2 + dimEcran.width/4, 10);
-
-            this.resolvePanel1.setSolution(s);
-            this.resolvePanel1.repaint();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "A FAIRE !!!!!!!!!!!", "Erreur de chargement", HEIGHT);
-            this.dispose();
-        }    
-    }
-    
-    
-    private Solution getSolutionTest() throws SQLException{
-        
-        
-        final EntityManagerFactory emf;
-        emf = Persistence.createEntityManagerFactory("OPTIBOXPU");
-        final EntityManager em = emf.createEntityManager();
-        try{
-            final EntityTransaction et = em.getTransaction();
-            try{
-                et.begin();
-                
-                DBRequests dbr = DBRequests.getInstance();
-                
-                // creation d’une entite persistante
-                Box b1 = new Box("B00",200,125,300);
-                Box b2 = new Box("B01",400,60,100);
-                Box b3 = new Box("B02",600,150,250);             
-                
-                System.out.println("On crée les 3 Box");
-                                
-                Produit p1 = new Produit("P00",50,10,5,dbr.getRandomColor());
-                Produit p2 = new Produit("P01",30,10,1,dbr.getRandomColor());
-                Produit p3 = new Produit("P02",60,60,3,dbr.getRandomColor());
-                Produit p4 = new Produit("P03",80,20,7,dbr.getRandomColor());
-                Produit p5 = new Produit("P04",20,60,2,dbr.getRandomColor());
-
-                Instance i = new Instance("Instance_Test1");
-                
-                i.ajouterObjet(b1);
-                i.ajouterObjet(b2);
-                i.ajouterObjet(b3);
-                i.ajouterObjet(p1);
-                i.ajouterObjet(p2);
-                i.ajouterObjet(p3);
-                i.ajouterObjet(p4);
-                i.ajouterObjet(p5);
-                
-                Solution s = new Solution(i);
-                s.TestCalculerSolution();
-                System.out.println(s);
-                System.out.println(s.getMesSolutionBox().size());
-                
-                
-                em.persist(s);
-                
-                et.commit();
-                
-                et.begin();
-                
-                
-                Solution sRecupFromBDD = dbr.getSolutionFromInstance(i);
-                
-                et.commit();
-                
-                return sRecupFromBDD;
-                
-            } 
-            catch (Exception ex) {
-                System.out.println(ex);
-                et.rollback();
-            }
-        }
-        finally {
-            if(em != null && em.isOpen()){
-                em.close();
-            }
-            if(emf != null && emf.isOpen()){
-                emf.close();
-            }
-        }
-    
-        
-        
-        
-        return null;
-        
-    }
-
+       
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

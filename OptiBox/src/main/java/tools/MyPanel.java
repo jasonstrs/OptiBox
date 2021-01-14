@@ -83,8 +83,10 @@ public class MyPanel extends javax.swing.JPanel {
                 }
                 g.setColor(oI.getColor()); 
                 temp=(Produit)oI;
-                if (oI.getColor()==c && x!=0)
+ 
+                if (c!=null && c.getRGB() == oI.getColor().getRGB() && x!=0){
                     x-=20; // si la couleur précédente est la même, on réduit l'écart entre les deux produits
+                }
                 
                 if (x+(oI.getLargeur())/scale>largeurPanel){ // on regarde si la pièce ne dépasse pas
                     // si elle dépasse, on récupère la hauteur max des pièces précédentes, puis on ajoute 20
