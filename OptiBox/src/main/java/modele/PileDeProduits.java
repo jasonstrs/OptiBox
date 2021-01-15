@@ -33,7 +33,7 @@ public class PileDeProduits implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    /****************************** PARAMETRES ****************************/
+    /****************************** ATTRIBUTS ****************************/
     
     @Column
     (
@@ -73,26 +73,14 @@ public class PileDeProduits implements Serializable {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public int getLargeur() {
         CalculerLargeur();
         return largeur;
     }
 
-    public void setLargeur(int largeur) {
-        this.largeur = largeur;
-    }
-
     public int getHauteur() {
         CalculerHauteur();
         return hauteur;
-    }
-
-    public void setHauteur(int hauteur) {
-        this.hauteur = hauteur;
     }
 
     public SolutionBox getMABOX() {
@@ -162,7 +150,9 @@ public class PileDeProduits implements Serializable {
         return this.MESPRODUITS.add(p);
     }
     
-    
+    /**
+     * Met à jour les infos de largeur et hauteur
+     */
     public void UpdateTaille() {
         this.CalculerHauteur();
         this.CalculerLargeur();

@@ -86,7 +86,10 @@ public class DBRequests {
         return ToutesLesInstances;
     }
 
-    
+    /**
+     * Fonction de connexion à la BDD
+     * @throws Exception 
+     */
     private void connect() throws Exception{
         String driverClass="org.apache.derby.jdbc.ClientDriver";
         String urlDatabase="jdbc:derby://localhost:1527/OptiBoxDB";
@@ -364,8 +367,8 @@ public class DBRequests {
     
     
     /**
-     * 
-     * @param s
+     * Fonction de suppression d'une solution en BDD
+     * @param s La solution à supprimer
      * @throws SQLException 
      */
     public void supprSolution(Solution s) throws SQLException {

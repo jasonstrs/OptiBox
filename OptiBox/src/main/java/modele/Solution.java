@@ -37,7 +37,7 @@ public class Solution implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    /**************************** PARAMETRES ************************/
+    /**************************** ATTRIBUTS ************************/
     
     @OneToOne
     @JoinColumn(name="INSTANCE")
@@ -98,10 +98,6 @@ public class Solution implements Serializable {
         this.mesSolutionBox = mesSolutionBox;
         this.calculerCout();
     }
-    
-    
-
-    
     
     /**************************** METHODES *************************/
     

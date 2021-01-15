@@ -37,6 +37,8 @@ public class Instance implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; 
     
+    /**************************** ATTRIBUTS ************************/
+    
     @OneToMany(mappedBy="monInstance",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private Collection<modele.Objet_d_Instance> ObjetsDeLInstance;
 
@@ -71,7 +73,7 @@ public class Instance implements Serializable {
         this.id = ID;   
     }
     
-        public Instance(Long ID, String nom,ArrayList<modele.Objet_d_Instance> l){
+    public Instance(Long ID, String nom,ArrayList<modele.Objet_d_Instance> l){
         this(ID,nom);
         this.ObjetsDeLInstance = l;
     }
@@ -106,10 +108,6 @@ public class Instance implements Serializable {
     
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
     
     public Collection<Objet_d_Instance> getObjetsDeLInstance() {

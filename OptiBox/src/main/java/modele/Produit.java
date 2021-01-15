@@ -28,6 +28,8 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**************************** ATTRIBUTS ************************/
+    
     @Column
     (
         name="quantite"
@@ -42,13 +44,14 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
                         // par exemple, si un produit à une quantité de 10, 10 produits de ce type auront le même groupe
     
     /**
-     * Pile de produits dansla solution
+     * Pile de produits dans la solution
      */
-    
     @ManyToOne
     @JoinColumn(name="MAPILE")
     private PileDeProduits MAPILE = null;
 
+    /**************************** CONSTRUCTEURS ************************/
+    
     public Produit(){
         this.quantite=1;
     }
@@ -81,7 +84,7 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         this.groupe=groupe;
     }
     
-        /****************************** METHODES ****************************/
+    /****************************** GETTERS & SETTERS ****************************/
 
     
     public int getQuantite() {
@@ -102,7 +105,7 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         this.MAPILE = MAPILE;
     }
     
-    
+    /**************************** METHODES ************************/
     
     
     @Override
@@ -130,6 +133,9 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
 //        return "Produit{"+ super.toString() + "quantite=" + quantite + '}';
 //    }
 
+    /**
+     * Affiche l'id du Produit dans la console 
+     */
     public void afficherID() {
         System.out.print("\t\t\t");
         System.out.print(this.id);

@@ -38,9 +38,12 @@ import javax.persistence.UniqueConstraint;
 public class Objet_d_Instance implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int idGenere;
+    
+    /**************************** ATTRIBUTS ************************/
     
     @Column(
             name="IDOBJET",
@@ -64,8 +67,13 @@ public class Objet_d_Instance implements Serializable {
     @JoinColumn(name="MonInstance")
     protected Instance monInstance = null;
     
+    @Column(
+            name="COLOR"
+    )
     private String color;
- 
+     
+    /**************************** CONSTRUCTEURS ************************/
+    
     public Objet_d_Instance(){
         this.id= "";
         this.Hauteur=0;
@@ -91,14 +99,12 @@ public class Objet_d_Instance implements Serializable {
         }
         this.setColor(color);
     }
+    
+    /**************************** GETTERS & SETTERS ************************/
 
     public int getIdGenere() {
         return idGenere;
-    }
-
-    public void setIdGenere(int idGenere) {
-        this.idGenere = idGenere;
-    }    
+    }   
 
     public int getHauteur() {
         return Hauteur;
@@ -128,11 +134,18 @@ public class Objet_d_Instance implements Serializable {
         this.monInstance = monInstance;
     }
 
+    /**
+     * Récupère la couleur de l'objet sous forme de String, et renvoie l'objet Color correspondant
+     * @return Color
+     */
     public Color getColor() {
-        return new Color(Integer.parseInt(color));
-        
+        return new Color(Integer.parseInt(color)); 
     }
 
+    /**
+     * Traduit la Color passée en paramètre en une STring correspondante, et l'applique à l'Objet
+     * @param color Color qu'on veut affecter à l'Objet
+     */
     public void setColor(Color color) {
         if (color!=null)
             this.color = Integer.toString(color.getRGB());
@@ -148,7 +161,7 @@ public class Objet_d_Instance implements Serializable {
     
     
 
-    
+    /**************************** METHODES ************************/
 
     
 

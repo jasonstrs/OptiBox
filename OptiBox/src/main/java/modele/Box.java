@@ -30,15 +30,20 @@ import javax.persistence.UniqueConstraint;
 public class Box extends Objet_d_Instance implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
+    /**************************** ATTRIBUTS ************************/    
+
     @Column
     (
         name="prix"
     )
     protected double prix;
-
+    
+    
     @OneToMany(mappedBy="TYPEDEBOX",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private Set<SolutionBox> MesSolutionBox;
+    
+    /**************************** CONSTRUCTEURS ************************/
     
     public Box(){
         this.prix=100;
@@ -60,6 +65,8 @@ public class Box extends Objet_d_Instance implements Serializable {
             this.prix=100;
     }
     
+    /**************************** GETTERS & SETTERS ************************/
+    
     public double getPrix() {
         return prix;
     }
@@ -78,7 +85,7 @@ public class Box extends Objet_d_Instance implements Serializable {
         this.MesSolutionBox = MesSolutionBox;
     }
     
-    
+    /**************************** METHODES ************************/
     
     @Override
     public int hashCode() {

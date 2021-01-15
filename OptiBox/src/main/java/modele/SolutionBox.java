@@ -31,7 +31,7 @@ import javax.persistence.OneToOne;
 @Entity
 public class SolutionBox implements Serializable {
 
-    /***************************** PARAMETRES ***************************/
+    /***************************** ATTRIBUTS ***************************/
     
     private static final long serialVersionUID = 1L;
     @Id
