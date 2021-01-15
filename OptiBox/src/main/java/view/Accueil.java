@@ -397,6 +397,7 @@ public class Accueil extends javax.swing.JFrame {
         i.ajouterObjet(p5);
 
         Solution s = new Solution(i);
+        //Solution s = Solution.algorithmeSolution(i);
         s.TestCalculerSolution();
         return s;
     }

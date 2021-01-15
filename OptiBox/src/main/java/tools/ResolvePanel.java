@@ -47,7 +47,8 @@ public class ResolvePanel extends javax.swing.JPanel {
            
         if (this.s != null){ // si il y a une solution, on l'a dessine
             Box box;
-            int x=0,y=0,maxHeight=0,index=0;
+            int x=0,y=0,maxHeight=0,index=0,yRef=0;
+            
             final int largeurPanel = this.getWidth();
             
             for (SolutionBox sb : this.s.getMesSolutionBox()){
@@ -80,15 +81,20 @@ public class ResolvePanel extends javax.swing.JPanel {
     private void dessinerProduits(SolutionBox sb, Box box, Graphics g,int x,int y){
         int positionEnX=x;
         int positionEnY=y;
+        int maxX=0;
         
         for (PileDeProduits pp : sb.getMesPiles()){
             for (Produit produit : pp.getMESPRODUITS()){
                 g.setColor(produit.getColor());
                 g.fillRect(positionEnX, positionEnY-produit.getHauteur()/scale, produit.getLargeur()/scale, produit.getHauteur()/scale);
+                g.setColor(Color.black);
+                g.drawRect(positionEnX, positionEnY-produit.getHauteur()/scale, produit.getLargeur()/scale, produit.getHauteur()/scale);
                 positionEnY-=produit.getHauteur()/scale;
+                if (maxX<produit.getLargeur()/scale) maxX=produit.getLargeur()/scale;
             }
             positionEnY=y;
-            positionEnX=x+pp.getLargeur()/scale;
+            positionEnX+=maxX;
+            maxX=0;
         }
     }
 

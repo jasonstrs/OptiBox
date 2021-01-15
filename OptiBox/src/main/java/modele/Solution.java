@@ -6,8 +6,11 @@ import java.sql.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
 
 /**
  *
@@ -105,9 +109,82 @@ public class Solution implements Serializable {
      * Algorithme de test basique, pour pouvoir tester en attendant le vrai
      */
     public void TestCalculerSolution(){
-       ArrayList<Box> BoxDispo = this.monInstance.getBox();
+        List<Box> BoxDispo = this.monInstance.getBox();
+        List<Produit> ProduitDispo = this.monInstance.getProduits();
+        boolean flag=false;
+        int nbProduit=ProduitDispo.size();
+        int i=0;
+        Produit produit=null;
+        int hauteurUtilise=0;
+        int largeurUtilise=0;
+        int index;
+        boolean ajoutPossible=true;
+        
+        Collections.sort(ProduitDispo, new Comparator<Produit>() {
+            @Override
+            public int compare(Produit lhs, Produit rhs) {
+                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                return lhs.getLargeur() > rhs.getLargeur() ? -1 : (lhs.getLargeur() < rhs.getLargeur()) ? 1 : 0;
+            }
+        });
+        
+         Collections.sort(BoxDispo, new Comparator<Box>() {
+            @Override
+            public int compare(Box lhs, Box rhs) {
+                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                return lhs.getLargeur() > rhs.getLargeur() ? -1 : (lhs.getLargeur() < rhs.getLargeur()) ? 1 : 0;
+            }
+        });
+        
+        // on prépare le tableau permettant de gérer les Produit
+        int tableauVerif[]=new int[nbProduit];
+        for(i=0;i<nbProduit;i++){
+            tableauVerif[i]=-1;
+        }
+        
+        while (encoreDesProduits(tableauVerif)){
+            // on récupère un produit
+            index=getRecupererPlusLargeObjetDispo(tableauVerif); // on récupère le premier produit
 
-       int i=0, nbBox = BoxDispo.size();
+            if (index == -1) // il n'y a plus de produit
+                break;
+            produit = ProduitDispo.get(index);
+            
+            // on crée un premier contenuBox
+            ArrayList<PileDeProduits> dpp = new ArrayList<>(); // on crée une pile de produit
+            SolutionBox sb = new SolutionBox(BoxDispo.get(0),this,dpp); // on crée une solution box
+            
+            while(largeurUtilise+produit.getLargeur()< sb.getTYPEDEBOX().getLargeur()){ // tant que l'on peut mettre des piles
+                PileDeProduits pp = new PileDeProduits(sb); // on crée une première pile
+                largeurUtilise+=produit.getLargeur();
+                tableauVerif[index]=1;
+                produit.setMAPILE(pp); // on ajoute le produit à la pile
+                pp.getMESPRODUITS().add(produit); // on fait le 2e lien
+                hauteurUtilise+=produit.getHauteur();
+                //System.out.println("La box a une hauteur de : "+sb.getTYPEDEBOX().getHauteur());
+                for (int k=0;k<tableauVerif.length;k++){
+                    if (tableauVerif[k] == -1){
+                        produit = ProduitDispo.get(k);
+                        if (hauteurUtilise+produit.getHauteur() < sb.getTYPEDEBOX().getHauteur()){ // on peut mettre le produit
+                            tableauVerif[k]=1;
+                            produit.setMAPILE(pp); // on ajoute le produit à la pile
+                            pp.getMESPRODUITS().add(produit); // on fait le 2e lien
+                            hauteurUtilise+=produit.getHauteur();
+                        }
+                    }
+                }
+                index=getRecupererPlusLargeObjetDispo(tableauVerif); // on récupère le premier produit
+                if (index == -1) // il n'y a plus de produit
+                    break;
+                produit = ProduitDispo.get(index);
+                hauteurUtilise=0;
+                pp.UpdateTaille();
+            }
+            largeurUtilise=0;     
+        }
+        
+       
+       /*int i=0, nbBox = BoxDispo.size();
        
        boolean flag=false;
 
@@ -120,6 +197,7 @@ public class Solution implements Serializable {
            // le constructeur ci dessous ajoute la pile dans les piles de la solution
            // il ne faut donc pas ré ajouter la pile dans la liste des piles
            PileDeProduits pp = new PileDeProduits(sb);
+        
            p.setMAPILE(pp);
            pp.getMESPRODUITS().add(p);
            
@@ -149,7 +227,7 @@ public class Solution implements Serializable {
            if(i>=nbBox)i=0;                            
            
        }
-       this.calculerCout();
+       this.calculerCout();*/
     }
     
     /**
@@ -167,8 +245,35 @@ public class Solution implements Serializable {
     }
     
     
+    /**
+     * Cette fonction permet de vérifier qu'il y a encore des produits disponibles
+     * @param T tableau de int
+     * @param nbProduit nombre de produit dans le tableau
+     * @return vrai s'il reste des produits
+     */
+    public boolean encoreDesProduits(int T[]){
+        for (int j=0;j<T.length;j++){
+           if (T[j] == -1)
+               return true; 
+        }
+        return false;
+    }
     
-    @Override
+    public int getRecupererPlusLargeObjetDispo(int T[]){
+        int index=-1,i=0;
+        for (i=0;i<T.length;i++){
+            if (T[i] == -1){
+                index=i;
+                break;
+            }
+        }
+        if (index == -1) // il n'y a plus de produit disponibles
+            return -1;
+        return index;
+    }
+    
+   
+    /*@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
@@ -186,7 +291,7 @@ public class Solution implements Serializable {
             return false;
         }
         return true;
-    }
+    }*/
 
     /**
      * Remplace la toString(), qui bug avec la persistence JPA
