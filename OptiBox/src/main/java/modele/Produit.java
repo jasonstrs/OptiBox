@@ -45,7 +45,7 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
      * Pile de produits dansla solution
      */
     
-    @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @ManyToOne
     @JoinColumn(name="MAPILE")
     private PileDeProduits MAPILE = null;
 

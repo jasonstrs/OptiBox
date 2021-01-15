@@ -48,7 +48,7 @@ public class Instance implements Serializable {
     )
     private String nom;
        
-    @OneToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @OneToOne(cascade={CascadeType.REMOVE})
     @JoinColumn(name="SOLUTION")
     private Solution maSolution;
     

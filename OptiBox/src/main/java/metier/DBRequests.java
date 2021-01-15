@@ -6,6 +6,7 @@
 package metier;
 
 import java.awt.Color;
+import static java.lang.Math.log;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,6 +25,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.metamodel.EntityType;
 import modele.Box;
 import modele.Instance;
 import modele.Objet_d_Instance;
@@ -31,6 +34,7 @@ import modele.PileDeProduits;
 import modele.Produit;
 import modele.Solution;
 import modele.SolutionBox;
+import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
 
 /**
  *
@@ -78,7 +82,9 @@ public class DBRequests {
         return dbr;
     }
     
-    
+    public List<Instance> getToutesLesInstances() {
+        return ToutesLesInstances;
+    }
 
     
     private void connect() throws Exception{
@@ -183,8 +189,16 @@ public class DBRequests {
         
     }
     
+    /**
+     * Récupère une solution grâce à son id et son instance
+     * @param ID_Sol l'id
+     * @param i l'instance
+     * @return la solution
+     * @throws SQLException 
+     */
     public Solution getSolutionFromID(int ID_Sol,Instance i) throws SQLException {
         Solution s = new Solution(i);
+        s.setId(Long.valueOf(ID_Sol));
         System.out.println("On a l'id, on cherche la solution");
         String requeteObjets = "SELECT * FROM SOLUTIONBOX sb WHERE sb.MASOLUTION = ?";
         ResultSet resObjets;
@@ -206,12 +220,22 @@ public class DBRequests {
         resObjets.close();
         pstmtObjets.close();
         
+        Comparator<SolutionBox> compareTauxRemplissage = (SolutionBox o1, SolutionBox o2) -> (int) (o2.getTauxDeRemplissage() - o1.getTauxDeRemplissage());
+        
+        Collections.sort(l, compareTauxRemplissage);
+        
         s.setMesSolutionBox(l);
         
         
         return s;
     }
     
+    /**
+     * Récupère une box à partir de son id (utilse pour créer les SolutionBox)
+     * @param id
+     * @return une box
+     * @throws SQLException 
+     */
     private Box getBoxFromID(int id) throws SQLException {
         Box laBox = null;
         
@@ -237,6 +261,12 @@ public class DBRequests {
         return laBox;
     }
     
+    /**
+     * Récupère les piles composant une SolutionBox
+     * @param sb
+     * @return
+     * @throws SQLException 
+     */
     private List<PileDeProduits> getPilesSolutionBox(SolutionBox sb) throws SQLException {
         ArrayList<PileDeProduits> l = new ArrayList<PileDeProduits>();
         
@@ -262,7 +292,12 @@ public class DBRequests {
         
     }
     
-    
+    /**
+     * Remplit une pile avec ses produits depuis la BDD
+     * @param idPile l'id de la pile à remplir
+     * @return la pile pleine
+     * @throws SQLException 
+     */
     private LinkedList<Produit> remplirPileAvecProduits(int idPile) throws SQLException {
         String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o WHERE o.DTYPE LIKE 'Produit' AND o.MAPILE=?";
         ResultSet resObjets;
@@ -291,9 +326,7 @@ public class DBRequests {
     }
     
 
-    public List<Instance> getToutesLesInstances() {
-        return ToutesLesInstances;
-    }
+    
     
     /**
      * Fonction qui permet de mettre une solution en BDD
@@ -307,6 +340,7 @@ public class DBRequests {
             final EntityTransaction et = em.getTransaction();
             try{
                 et.begin();
+                s.afficher();
                 em.persist(s);
                 et.commit();
                 System.out.println("Solution mise en BDD");
@@ -329,25 +363,37 @@ public class DBRequests {
     }
     
     
-    
-    
+    /**
+     * 
+     * @param s
+     * @throws SQLException 
+     */
+    public void supprSolution(Solution s) throws SQLException {
+        final EntityManagerFactory emf;
+        emf = Persistence.createEntityManagerFactory("OPTIBOXPU");
+        final EntityManager em = emf.createEntityManager();
+        
+        try{
+            em.getTransaction().begin(); 
+            Solution s2 = em.find(Solution.class, s.getId());
+            System.out.println("LA SOLUTION STP "+s2);
+            em.remove(s2);
+            em.getTransaction().commit();      
+        }
+        finally {
+            if(em != null && em.isOpen()){
+                em.close();
+            }
+            if(emf != null && emf.isOpen()){
+                emf.close();
+            }
+        }              
+
+    }
+   
     @Override
     public String toString() {
         return "DBRequests{" + "conn=" + conn + ", ToutesLesInstances=" + ToutesLesInstances + '}';
     }
-
   
-
-
-
-    
-
-
-
-    
-    
-    
-    
-    
-        
 }

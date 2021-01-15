@@ -35,7 +35,7 @@ public class Solution implements Serializable {
     
     /**************************** PARAMETRES ************************/
     
-    @OneToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @OneToOne
     @JoinColumn(name="INSTANCE")
     private Instance monInstance;
     
@@ -94,11 +94,16 @@ public class Solution implements Serializable {
         this.mesSolutionBox = mesSolutionBox;
         this.calculerCout();
     }
+    
+    
 
     
     
     /**************************** METHODES *************************/
     
+    /**
+     * Algorithme de test basique, pour pouvoir tester en attendant le vrai
+     */
     public void TestCalculerSolution(){
        ArrayList<Box> BoxDispo = this.monInstance.getBox();
 
@@ -147,6 +152,10 @@ public class Solution implements Serializable {
        this.calculerCout();
     }
     
+    /**
+     * Calcule le coût actuel de la solution
+     * @return 
+     */
     public double calculerCout(){
         double prixTotalSolution = 0;
         
@@ -179,7 +188,9 @@ public class Solution implements Serializable {
         return true;
     }
 
-    
+    /**
+     * Remplace la toString(), qui bug avec la persistence JPA
+     */
     public void afficher() {
         this.calculerCout();
         System.out.println("Solution : ");

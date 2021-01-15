@@ -25,6 +25,7 @@ import modele.PileDeProduits;
 import modele.Produit;
 import modele.Solution;
 import modele.SolutionBox;
+import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
 
 /**
  *
@@ -110,7 +111,7 @@ public class Accueil extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return true; // s'il y a une solution en BDD c'est good !
+        return true; // s_new'il y a une solution en BDD c'est good !
     }
 
     
@@ -174,7 +175,7 @@ public class Accueil extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jList_instance);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(0, 0, 280, 540);
+        jScrollPane1.setBounds(0, 0, 280, 430);
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(200, 200));
         jScrollPane2.setViewportView(myPanel1);
@@ -197,7 +198,7 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(zoom_plus);
-        zoom_plus.setBounds(50, 570, 20, 20);
+        zoom_plus.setBounds(50, 480, 20, 20);
 
         zoom_moins.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         zoom_moins.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 36)); // NOI18N
@@ -209,13 +210,13 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(zoom_moins);
-        zoom_moins.setBounds(190, 570, 18, 20);
+        zoom_moins.setBounds(190, 480, 16, 20);
 
         label_zoom.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 24)); // NOI18N
         label_zoom.setForeground(new java.awt.Color(255, 51, 51));
         label_zoom.setText("Zoom");
         getContentPane().add(label_zoom);
-        label_zoom.setBounds(100, 540, 120, 40);
+        label_zoom.setBounds(100, 450, 120, 40);
 
         button_resolve.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 12)); // NOI18N
         button_resolve.setText("RÉSOUDRE");
@@ -230,7 +231,7 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(button_resolve);
-        button_resolve.setBounds(10, 610, 110, 40);
+        button_resolve.setBounds(10, 520, 110, 40);
 
         button_sol_BDD.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 12)); // NOI18N
         button_sol_BDD.setText("SOLUTION BDD");
@@ -245,7 +246,7 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(button_sol_BDD);
-        button_sol_BDD.setBounds(130, 610, 140, 40);
+        button_sol_BDD.setBounds(130, 520, 140, 40);
 
         menuBar.setBackground(java.awt.Color.red);
 
@@ -303,15 +304,68 @@ public class Accueil extends javax.swing.JFrame {
         else {
             System.out.println(index);
             Object c = this.jList_instance.getModel().getElementAt(index); // on récupère l'objet
+            
+            
+            //Si on veut REcalculer une solution (on en a déjà une en BDD)
+            //On vérifie si la nouvelle solution est meilleure que la précédente
+            //Si oui on supprime celle en bdd, et on la remplace par la nouvelle.
+            if(this.checkIfEnableBDDButton((Instance)c)){
+                if(JOptionPane.showConfirmDialog(this, "Une solution existe déjà. Tenter d'en calculer une autre ? ", "Attention", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                    //On a décidé de calculer une nouvelle solution                   
+                    Solution s_new = new Solution((Instance)c);
+                    Solution s_old = null;
+                    s_new.TestCalculerSolution();
+                    s_new.calculerCout();
+                    //On essaie de récupérer l'anciene solution
+                    try {
+                        s_old = this.dbr.getSolutionFromInstance((Instance)c, false); // on récupère la solution
+                        s_old.calculerCout();
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(this,"Erreur lors de la communication avec la BDD", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    catch(NullPointerException e){ // si pas de solution (juste une sécurité car de base le bouton est en disabled si pas de solution)
+                        JOptionPane.showMessageDialog(this, "Il n'y a pas de solution en BDD", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    
+                    //On vérifie si la nouvelle solution est meilleure
+                    if(s_new.getCout() > s_old.getCout()){
+                        JOptionPane.showMessageDialog(this, "La nouvelle solution est moins bonne (ou égale) que celle en BDD, abandon...", "Attention", JOptionPane.WARNING_MESSAGE);  
+                        return;
+                    }
+                    
+                    JOptionPane.showMessageDialog(this, "La nouvelle solution est meilleure que celle en bdd, on la remplace.", "Information", JOptionPane.INFORMATION_MESSAGE); 
+                    try {
+                        this.dbr.supprSolution(s_old);
+                        double gains = s_new.getCout()-s_old.getCout();
+                        JOptionPane.showMessageDialog(this, "L'ancienne solution a bien été supprimée, et va être remplacée.\n"+gains+" € gagnés", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(this, "Impossible de supprimer l'ancienne solution ! Abandon...", "Erreur", JOptionPane.ERROR_MESSAGE);                            
+                    }                                                                      
+                }
+                else{
+                    this.setCursor(Cursor.DEFAULT_CURSOR);
+                    return;
+                }
+            }    
+            
             // on lance l'algo qui renvoie une solution
-            // Solution s = ALGO
-//            Solution s = test(); // SUPPRIMER LA FONCTION TEST
+            // Solution s_new = ALGO
+//            Solution s_new = test(); // SUPPRIMER LA FONCTION TEST
             Solution s = new Solution((Instance)c);
             s.TestCalculerSolution();
             
             // on met en BDD
-            this.dbr.mettreSolutionEnBdd(s);
-            new Resolve(s);
+            try{
+                this.dbr.mettreSolutionEnBdd(s);
+                new Resolve(s);
+            }
+            catch(Exception e){
+                JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout de la solution en BDD.\nAbandon...", "Erreur", JOptionPane.ERROR_MESSAGE);                
+            }
+            
+            
         }
         
         this.setCursor(Cursor.DEFAULT_CURSOR);
