@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import static java.awt.image.ImageObserver.HEIGHT;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -188,6 +189,8 @@ public class ResolvePanel extends javax.swing.JPanel {
         String chaineProduit="";
         String puce = new String(Character.toChars(0x2B50)); // logo étoile
         
+        DecimalFormat numberFormat = new DecimalFormat("#.000");
+        
         JSONObject oObjectInTab; // variable qui va contenir l'objet qui se trouve dans chaque index
         int xmin, xmax,ymin,ymax;
         SolutionBox sb;
@@ -217,11 +220,11 @@ public class ResolvePanel extends javax.swing.JPanel {
                 chaine+="\n--------------------------------------------------------------------------------\n";
                 
                 for (PileDeProduits pp : sb.getMesPiles()){
-                    chaine+="La pile n°"+j+" contient "+pp.getMESPRODUITS().size()+" produits";
+                    chaine+="La pile n°"+j+" contient "+pp.getMESPRODUITS().size()+" produits\n";
                     j++;
                 }
-                chaine+="\n--------------------------------------------------------------------------------\n";
-                chaine+="Taux de remplissage : "+sb.getTauxDeRemplissage()+" %";
+                chaine+="--------------------------------------------------------------------------------\n";
+                chaine+="Taux de remplissage : "+numberFormat.format(sb.getTauxDeRemplissage())+" %";
                 
                 JOptionPane.showMessageDialog(this, chaine, "Informations complémentaires", JOptionPane.PLAIN_MESSAGE);
             }
