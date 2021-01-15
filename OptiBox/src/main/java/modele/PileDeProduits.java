@@ -1,23 +1,15 @@
 package modele;
 
 import java.io.Serializable;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -29,37 +21,60 @@ import javax.persistence.OneToMany;
 @Entity
 public class PileDeProduits implements Serializable {
     private static final long serialVersionUID = 1L;
+    /**
+     * ID généré par la BDD
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    /****************************** ATTRIBUTS ****************************/
+    // ATTRIBUTS 
     
+    /**
+     * Largeur d'une pile
+     */
     @Column
     (
         name="LARGEUR"
     )
     int largeur;
+    
+    /**
+     * Hauteur d'une pile
+     */
     @Column
     (
         name="HAUTEUR"
     )
     int hauteur;
     
+    /**
+     * Objet Solution box dans lequel se trouve la pile
+     */
     @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     @JoinColumn(name="MABOX")
     private SolutionBox MABOX;
             
+    /**
+     * Liste des produits de la pile
+     */
     @OneToMany(mappedBy="MAPILE",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Produit> MESPRODUITS;
     
-    /****************************** CONSTRUCTEURS ****************************/
+    // CONSTRUCTEURS 
     
+    /**
+     * Constructeur par défaut
+     */
     public PileDeProduits() {
         this.MABOX = null;
         this.MESPRODUITS = new LinkedList();
     }
     
+    /**
+     * Constructeur par données
+     * @param sb SolutionBox de la pile
+     */
     public PileDeProduits(SolutionBox sb){
         this();
         MABOX = sb;
@@ -67,41 +82,67 @@ public class PileDeProduits implements Serializable {
         this.UpdateTaille();
     }
         
-    /****************************** GETTERS & SETTERS ****************************/
+    // GETTERS & SETTERS 
     
+    /**
+     * Récupérer l'id de la pile
+     * @return id de la pile
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Récupérer la largeur de la pile
+     * @return la largeur
+     */
     public int getLargeur() {
         CalculerLargeur();
         return largeur;
     }
 
+    /**
+     * Récupérer la hauteur de la pile
+     * @return la hauteur de la pile
+     */
     public int getHauteur() {
         CalculerHauteur();
         return hauteur;
     }
 
+    /**
+     * Récupérer la solution box de la pile
+     * @return la solution box
+     */
     public SolutionBox getMABOX() {
         return MABOX;
     }
 
+    /**
+     * Attribuer une solution box à une pile
+     * @param MABOX solution box à attribuer
+     */
     public void setMABOX(SolutionBox MABOX) {
         this.MABOX = MABOX;
     }
 
+    /**
+     * Récupérer la liste de produits d'une pile
+     * @return produits de la pile
+     */
     public List<Produit> getMESPRODUITS() {
         return MESPRODUITS;
     }
 
+    /**
+     * Affecter une liste de produits à une pile
+     * @param MESPRODUITS liste à attribuer
+     */
     public void setMESPRODUITS(LinkedList<Produit> MESPRODUITS) {
         this.MESPRODUITS = MESPRODUITS;
     }
     
-    
-    
-    /****************************** METHODES ****************************/
+    // METHODES 
 
     /**
      * Calcule la largeur totale de la pile (Largeur du 1er élément)
@@ -176,15 +217,5 @@ public class PileDeProduits implements Serializable {
             return false;
         }
         return true;
-    }
-
-//    @Override
-//    public String toString() {
-//        return this.MESPRODUITS.toString();
-//    }
-
-    
-
-
-    
+    } 
 }

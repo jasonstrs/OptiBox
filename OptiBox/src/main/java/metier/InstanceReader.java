@@ -79,6 +79,7 @@ public class InstanceReader {
      * Methode principale pour lire le fichier d'instance.
      * @throws ReaderException lorsque les donnees dans le fichier d'instance 
      * sont manquantes ou au mauvais format.
+     * @return Instance
      */
     public Instance readInstance() throws ReaderException {
         Scanner scanner = null;
@@ -410,6 +411,7 @@ public class InstanceReader {
 
     /**
      * Un petit test pour verifier que tout fonctionne correctement.
+     * @param args Argument de base
      */
     public static void main(String[] args) {
         try {

@@ -45,20 +45,30 @@ public class MyPanel extends javax.swing.JPanel {
         
     }
 
-    /************************* GETTERS ET SETTERS ***********************/
+    // GETTERS ET SETTERS 
+    
+    /**
+     * Permet de récupérer les instances à dessiner
+     * @return liste des instances à dessiner
+     */
     public Collection getInstancesADessiner() {
         return instancesADessiner;
     }
 
+    /**
+     * Permet d'ttribuer les instances à dessiner sur le panel
+     * @param instancesADessiner instance à dessiner
+     */
     public void setInstancesADessiner(Collection instancesADessiner) {
         this.instancesADessiner = instancesADessiner;
     }
     
-    /****************************** METHODES ****************************/
+    // METHODES 
     
     /**
      * Fonction qui permet de dessiner l'instance complète en faisant attention à ne pas dépasser
      * la largeur du panel, de même de manière à ce que les pièces ne se chevauchent pas
+     * @param g Graphics sur lequel on dessine
      */
     public void dessinerInstance(Graphics g){
         final int largeurPanel = this.getWidth();
@@ -122,6 +132,13 @@ public class MyPanel extends javax.swing.JPanel {
         this.revalidate();
     }
     
+    /**
+     * Fonction qui permet de dessiner l'entête de l'interface
+     * @param g Graphics sur lequel on dessine
+     * @param text texte à écrire
+     * @param x  coordonnée x
+     * @param y  coordonnée y
+     */
     public void dessinerEntete(Graphics g,String text,int x,int y){
         g.setColor(Color.black);
         //g.drawLine(0, y, this.getWidth(), y);

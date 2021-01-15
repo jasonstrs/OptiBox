@@ -5,7 +5,6 @@
  */
 package view;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -18,14 +17,9 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import metier.DBRequests;
-import modele.Box;
 import modele.Instance;
 import modele.Objet_d_Instance;
-import modele.PileDeProduits;
-import modele.Produit;
 import modele.Solution;
-import modele.SolutionBox;
-import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
 
 /**
  *
@@ -80,6 +74,9 @@ public class Accueil extends javax.swing.JFrame {
         this.button_resolve.setEnabled(false);
     }
         
+    /**
+     * Fonction qui permet de récupérer toutes les instances et les mettre dans le JLIST
+     */
     private void getAllInstance(){
         DefaultListModel dlm = new DefaultListModel();
         this.jList_instance.setModel(dlm);
@@ -98,12 +95,21 @@ public class Accueil extends javax.swing.JFrame {
         }              
     }
     
+    /**
+     * Fonction qui permet de dessiner une instance lorsqu'elle est selectionné
+     * @param i  instance à dessiner
+     */
     public void afficherInstance(Instance i){
         Collection<Objet_d_Instance> ObjectsDeLInstance = i.getObjetsDeLInstance();
         this.myPanel1.setInstancesADessiner(ObjectsDeLInstance);
         this.myPanel1.repaint();
     }
     
+    /**
+     * Fonction qui permet de savoir si une solution est déjà en BDD afin de désactiver ou non le bouton "Résoudre BDD"
+     * @param i instance sur laquelle on vérifié si la solution est en BDD
+     * @return boolean true si déjà en BDD
+     */
     public boolean checkIfEnableBDDButton(Instance i){
         try {
             if(dbr.getSolutionFromInstance(i,true) == null)
@@ -175,7 +181,7 @@ public class Accueil extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jList_instance);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(0, 0, 280, 430);
+        jScrollPane1.setBounds(0, 0, 280, 460);
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(200, 200));
         jScrollPane2.setViewportView(myPanel1);
@@ -198,7 +204,7 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(zoom_plus);
-        zoom_plus.setBounds(50, 480, 20, 20);
+        zoom_plus.setBounds(50, 510, 20, 20);
 
         zoom_moins.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         zoom_moins.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 36)); // NOI18N
@@ -210,13 +216,13 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(zoom_moins);
-        zoom_moins.setBounds(190, 480, 16, 20);
+        zoom_moins.setBounds(190, 510, 18, 20);
 
         label_zoom.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 24)); // NOI18N
         label_zoom.setForeground(new java.awt.Color(255, 51, 51));
         label_zoom.setText("Zoom");
         getContentPane().add(label_zoom);
-        label_zoom.setBounds(100, 450, 120, 40);
+        label_zoom.setBounds(100, 470, 120, 40);
 
         button_resolve.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 12)); // NOI18N
         button_resolve.setText("RÉSOUDRE");
@@ -231,7 +237,7 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(button_resolve);
-        button_resolve.setBounds(10, 520, 110, 40);
+        button_resolve.setBounds(10, 570, 110, 40);
 
         button_sol_BDD.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 12)); // NOI18N
         button_sol_BDD.setText("SOLUTION BDD");
@@ -246,7 +252,7 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
         getContentPane().add(button_sol_BDD);
-        button_sol_BDD.setBounds(130, 520, 140, 40);
+        button_sol_BDD.setBounds(130, 570, 140, 40);
 
         menuBar.setBackground(java.awt.Color.red);
 
@@ -348,11 +354,9 @@ public class Accueil extends javax.swing.JFrame {
                     this.setCursor(Cursor.DEFAULT_CURSOR);
                     return;
                 }
-            }    
-            
+            }               
             // on lance l'algo qui renvoie une solution
-            // Solution s_new = ALGO
-//            Solution s_new = test(); // SUPPRIMER LA FONCTION TEST
+
             Solution s = new Solution((Instance)c);
             s.TestCalculerSolution();
             
@@ -367,40 +371,9 @@ public class Accueil extends javax.swing.JFrame {
             
             
         }
-        
         this.setCursor(Cursor.DEFAULT_CURSOR);
-        
     }//GEN-LAST:event_button_resolveMouseClicked
 
-    public Solution test(){
-        Box b1 = new Box("B00",200,125,300);
-        Box b2 = new Box("B01",400,60,100);
-        Box b3 = new Box("B02",600,150,250);             
-
-        System.out.println("On crée les 3 Box");
-
-        Produit p1 = new Produit("P00",50,10,5,Color.BLACK);
-        Produit p2 = new Produit("P01",30,10,1,Color.RED);
-        Produit p3 = new Produit("P02",60,60,3,Color.BLUE);
-        Produit p4 = new Produit("P03",80,20,7,Color.GREEN);
-        Produit p5 = new Produit("P04",20,60,2,Color.ORANGE);
-
-        Instance i = new Instance("Instance_Test1");
-
-        i.ajouterObjet(b1);
-        i.ajouterObjet(b2);
-        i.ajouterObjet(b3);
-        i.ajouterObjet(p1);
-        i.ajouterObjet(p2);
-        i.ajouterObjet(p3);
-        i.ajouterObjet(p4);
-        i.ajouterObjet(p5);
-
-        Solution s = new Solution(i);
-        //Solution s = Solution.algorithmeSolution(i);
-        s.TestCalculerSolution();
-        return s;
-    }
     
     private void button_resolveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_resolveActionPerformed
         // TODO add your handling code here:

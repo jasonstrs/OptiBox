@@ -5,24 +5,10 @@
  */
 package view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.swing.JOptionPane;
 import metier.DBRequests;
-import modele.Box;
-import modele.Instance;
-import modele.PileDeProduits;
-import modele.Produit;
 import modele.Solution;
-import modele.SolutionBox;
 
 
 /**
@@ -30,8 +16,8 @@ import modele.SolutionBox;
  * @author Jason
  */
 public class Resolve extends javax.swing.JFrame {
-    private DBRequests dbr;
-    Dimension dimEcran;
+    private DBRequests dbr; // accès à la BDD
+    Dimension dimEcran; // dimension de l'écran
 
     /**
      * Creates new form Resolve

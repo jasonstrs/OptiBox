@@ -7,17 +7,10 @@ package modele;
 
 import java.awt.Color;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 /**
  *
@@ -28,34 +21,50 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**************************** ATTRIBUTS ************************/
+    // ATTRIBUTS 
     
+    /**
+     * Quantite d'un produit
+     */
     @Column
     (
         name="quantite"
     )
     private int quantite;
     
+    /**
+     * Groupe d'un produit. Cet attribut permet de rassembler les produits identiques pour gérer la quantité
+     *   par exemple, si un produit à une quantité de 10, 10 produits de ce type auront le même groupe
+     */
     @Column
     (
         name="groupe"
     )
-    private int groupe; // cet attribut permet de rassembler les produits identiques pour gérer la quantité
-                        // par exemple, si un produit à une quantité de 10, 10 produits de ce type auront le même groupe
+    private int groupe; 
     
     /**
-     * Pile de produits dans la solution
+     * Pile dans laquelle se trouve le produit
      */
     @ManyToOne
     @JoinColumn(name="MAPILE")
     private PileDeProduits MAPILE = null;
 
-    /**************************** CONSTRUCTEURS ************************/
+    // CONSTRUCTEURS 
     
+    /**
+     * Constructeur par défaut
+     */
     public Produit(){
         this.quantite=1;
     }
     
+    /**
+     * Constructeur par données
+     * @param id id du produit
+     * @param l largeur du produit
+     * @param h hauteur du produit
+     * @param quantite quantite du produit
+     */
     public Produit(String id,int l,int h,int quantite){
         super(id,l,h);
         if(quantite>=1)
@@ -65,6 +74,14 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         }
     }
     
+    /**
+     * Constructeur par données
+     * @param id id du produit
+     * @param l largeur du produit
+     * @param h hauteur du produit
+     * @param quantite quantite du produit
+     * @param color couleur du produit
+     */
     public Produit(String id,int l,int h,int quantite,Color color){
         super(id,l,h,color);
         if(quantite>=1)
@@ -74,6 +91,15 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         }
     }
     
+    /**
+     * Constructeur par données
+     * @param id id du produit
+     * @param l largeur du produit
+     * @param h hauteur du produit
+     * @param quantite quantite du produit
+     * @param color couleur du produit
+     * @param groupe groupe du produit
+     */
     public Produit(String id,int l,int h,int quantite,Color color,int groupe){
         super(id,l,h,color);
         if(quantite>=1)
@@ -84,29 +110,41 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         this.groupe=groupe;
     }
     
-    /****************************** GETTERS & SETTERS ****************************/
+    // GETTERS & SETTERS 
 
-    
+    /**
+     * permet de récupérer la quantite du produit
+     * @return quantité
+     */
     public int getQuantite() {
         return quantite;
     }
 
+    /**
+     * Permet de mettre une quantité à un produit
+     * @param quantite quantité à attribuer
+     */
     public void setQuantite(int quantite) {
         if(quantite>=0){
             this.quantite = quantite;
         }
     }
 
+    /**
+     * Permet de récupérer la pile dans laquelle se trouve le produit
+     * @return pile
+     */
     public PileDeProduits getMAPILE() {
         return MAPILE;
     }
 
+    /**
+     * Permet de mettre un produit dans une pile
+     * @param MAPILE pile à attribuer
+     */
     public void setMAPILE(PileDeProduits MAPILE) {
         this.MAPILE = MAPILE;
-    }
-    
-    /**************************** METHODES ************************/
-    
+    }    
     
     @Override
     public int hashCode() {
@@ -128,11 +166,6 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         return true;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Produit{"+ super.toString() + "quantite=" + quantite + '}';
-//    }
-
     /**
      * Affiche l'id du Produit dans la console 
      */
@@ -142,6 +175,4 @@ public class Produit extends modele.Objet_d_Instance implements Serializable {
         System.out.print("\n");
     }
 
-
-    
 }

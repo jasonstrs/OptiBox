@@ -40,6 +40,7 @@ modele\Instance_.class
 modele\Solution.class
 metier\InstanceReader$Infos.class
 view\Accueil$8.class
+.netbeans_automatic_build
 view\Accueil$11.class
 view\Accueil.class
 tools\ResolvePanel$1.class

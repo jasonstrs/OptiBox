@@ -61,7 +61,7 @@ public class DBRequests {
      * Constructeur par défaut privé : on ne peut pas instancier cette classe
      * Ainsi, on crée une instance, et on la partage avec ceux qui en ont besoin
      * @throws SQLNonTransientConnectionException
-     * @throws Exception 
+     * @throws Exception exception qui peut être emise
      */
     private DBRequests() throws Exception{
         ToutesLesInstances = new ArrayList<>();
@@ -74,7 +74,7 @@ public class DBRequests {
      * seulement récupérer l'unique instance de la classe
      * (ou la créer si elle n'existe pas)
      * @return La seule instance de DBRequests
-     * @throws Exception 
+     * @throws Exception exception qui peut être emise
      */
     public static DBRequests getInstance() throws Exception{
         if(dbr == null)
@@ -88,7 +88,7 @@ public class DBRequests {
 
     /**
      * Fonction de connexion à la BDD
-     * @throws Exception 
+     * @throws Exception exception qui peut être emise
      */
     private void connect() throws Exception{
         String driverClass="org.apache.derby.jdbc.ClientDriver";
@@ -101,6 +101,7 @@ public class DBRequests {
     
     /**
      * Récupère toutes les instances de la BDD, avec leurs objets
+     *  @throws Exception exception qui peut être emise
      */
     public void getAllInstances() throws Exception{
         try{
@@ -159,6 +160,7 @@ public class DBRequests {
      * @param i l'instance dont on veut la solution
      * @param justAVerif s'il vaut true on veut juste savoir si il y a une solution
      *                      s'il vaut false on veut récupérer un objet solution
+     * @throws SQLException exception qui peut être emise
      * @return La solution
      */
     public Solution getSolutionFromInstance(Instance i,boolean justAVerif) throws SQLException{
@@ -197,7 +199,7 @@ public class DBRequests {
      * @param ID_Sol l'id
      * @param i l'instance
      * @return la solution
-     * @throws SQLException 
+     * @throws SQLException exception qui peut être emise
      */
     public Solution getSolutionFromID(int ID_Sol,Instance i) throws SQLException {
         Solution s = new Solution(i);
@@ -237,7 +239,7 @@ public class DBRequests {
      * Récupère une box à partir de son id (utilse pour créer les SolutionBox)
      * @param id
      * @return une box
-     * @throws SQLException 
+     * @throws SQLException exception qui peut être emise
      */
     private Box getBoxFromID(int id) throws SQLException {
         Box laBox = null;
@@ -268,7 +270,7 @@ public class DBRequests {
      * Récupère les piles composant une SolutionBox
      * @param sb
      * @return
-     * @throws SQLException 
+     * @throws SQLException exception qui peut être emise 
      */
     private List<PileDeProduits> getPilesSolutionBox(SolutionBox sb) throws SQLException {
         ArrayList<PileDeProduits> l = new ArrayList<PileDeProduits>();
@@ -299,7 +301,7 @@ public class DBRequests {
      * Remplit une pile avec ses produits depuis la BDD
      * @param idPile l'id de la pile à remplir
      * @return la pile pleine
-     * @throws SQLException 
+     * @throws SQLException exception qui peut être emise
      */
     private LinkedList<Produit> remplirPileAvecProduits(int idPile) throws SQLException {
         String requeteObjets = "SELECT * FROM OBJET_D_INSTANCE o WHERE o.DTYPE LIKE 'Produit' AND o.MAPILE=?";
@@ -369,7 +371,7 @@ public class DBRequests {
     /**
      * Fonction de suppression d'une solution en BDD
      * @param s La solution à supprimer
-     * @throws SQLException 
+     * @throws SQLException exception qui peut être emise
      */
     public void supprSolution(Solution s) throws SQLException {
         final EntityManagerFactory emf;

@@ -7,20 +7,12 @@ package modele;
 
 import java.awt.Color;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
  *
@@ -31,20 +23,27 @@ public class Box extends Objet_d_Instance implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**************************** ATTRIBUTS ************************/    
+    // ATTRIBUTS 
 
+    /**
+     * Prix de la box
+     */
     @Column
     (
         name="prix"
     )
     protected double prix;
     
-    
+    /**
+     * Liste qui va contenir l'ensemble des solutions où se trouve la box
+     */
     @OneToMany(mappedBy="TYPEDEBOX",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private Set<SolutionBox> MesSolutionBox;
     
-    /**************************** CONSTRUCTEURS ************************/
     
+      /**
+     * Constructeur par défaut
+     */
     public Box(){
         this.prix=100;
     }
@@ -66,26 +65,41 @@ public class Box extends Objet_d_Instance implements Serializable {
     }
     
     /**************************** GETTERS & SETTERS ************************/
-    
+    /**
+     * Méthode permettant de récupérer le prix de la box
+     * @return prix 
+     */
     public double getPrix() {
         return prix;
     }
 
+    /**
+     * Méthode qui permet d'attribuer un prix à la box
+     * @param prix prix d'une box
+     */
     public void setPrix(float prix) {
         if(prix>0){
             this.prix = prix;
         }
     }    
 
+    /**
+     * Méthode qui permet de récupérer les Solutions Box liées à la box
+     * @return Les solutions box qui contiennent la box
+     */
     public Set<SolutionBox> getMesSolutionBox() {
         return MesSolutionBox;
     }
 
+    /**
+     * Méthode qui permet de mettre les solutions box dans une box
+     * @param MesSolutionBox solution box à metrre dans la box
+     */
     public void setMesSolutionBox(Set<SolutionBox> MesSolutionBox) {
         this.MesSolutionBox = MesSolutionBox;
     }
     
-    /**************************** METHODES ************************/
+    // METHODES 
     
     @Override
     public int hashCode() {
@@ -105,13 +119,5 @@ public class Box extends Objet_d_Instance implements Serializable {
             return false;
         }
         return true;
-    }
-
-//    @Override
-//    public String toString() {
-//        return "Box{" + super.toString() + " prix=" + prix + '}';
-//    }
-//    
-    
-    
+    } 
 }

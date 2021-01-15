@@ -7,14 +7,9 @@ package tools;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
-import static java.awt.image.ImageObserver.HEIGHT;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import modele.*;
 import org.json.simple.*;
@@ -27,9 +22,9 @@ import org.json.simple.*;
  */
 public class ResolvePanel extends javax.swing.JPanel {
 
-    private Solution s;
-    private int scale=1;
-    private JSONObject arrayJSONObject;
+    private Solution s; // solution à dessiner
+    private int scale=1; // echelle
+    private JSONObject arrayJSONObject; // json qui va permettre de stocker les coordonnées
     
     /**
      * Creates new form ResolvePanel
@@ -41,7 +36,7 @@ public class ResolvePanel extends javax.swing.JPanel {
     
 
     
-    /************************* DESSINER ********************************/
+    // DESSINER 
     @Override    
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
@@ -79,10 +74,17 @@ public class ResolvePanel extends javax.swing.JPanel {
         }
     }
     
+    /**
+     * Fonction qui permet de dessiner l'ensemble des produits d'une solution box
+     * @param sb solution box à dessiner
+     * @param box box à remplir
+     * @param g Graphics sur lequel on dessine
+     * @param x position dans le coin en bas à gauche sur x
+     * @param y  position dans le coin en bas à gauche sur y
+     */
     private void dessinerProduits(SolutionBox sb, Box box, Graphics g,int x,int y){
         int positionEnX=x;
         int positionEnY=y;
-        int maxX=0;
         
         for (PileDeProduits pp : sb.getMesPiles()){
             for (Produit produit : pp.getMESPRODUITS()){
@@ -91,24 +93,31 @@ public class ResolvePanel extends javax.swing.JPanel {
                 g.setColor(Color.black);
                 g.drawRect(positionEnX, positionEnY-produit.getHauteur()/scale, produit.getLargeur()/scale, produit.getHauteur()/scale);
                 positionEnY-=produit.getHauteur()/scale;
-                if (maxX<produit.getLargeur()/scale) maxX=produit.getLargeur()/scale;
             }
             positionEnY=y;
-            positionEnX+=maxX;
-            maxX=0;
+            positionEnX+=pp.getLargeur();
         }
     }
 
-    /************************* GETTERS ET SETTERS***********************/
+    // GETTERS ET SETTERS
+    
+    /**
+     * Attribuer une solution au panel
+     * @param s solution à dessiner
+     */
     public void setSolution(Solution s) {
         this.s = s;
     }
     
+    /**
+     * Récupérer la solution à dessiner
+     * @return solution
+     */
     public Solution getSolution(){
         return s;
     }
 
-    /****************************** METHODES ****************************/
+    // METHODES 
     /**
      * Fonction qui permet d'augmenter le zoom sur le panel
      * Si l'echelle a atteint 2, on ne peux pas plus zoomer
@@ -127,6 +136,16 @@ public class ResolvePanel extends javax.swing.JPanel {
         this.scale++;
     }
     
+    /**
+     * Fonction qui permet de stocker les coordonnées d'une solution box afin de pouvoir stocker ses coordonnées pour gérer
+     * le clic sur une box
+     * @param index index dans le fichier JSON
+     * @param xmin coordonnée xmin (sur la gauche)
+     * @param xmax coordonée xmax (sur la droite)
+     * @param ymin coordonnée ymin (en haut)
+     * @param ymax coordonnée ymax (en bas)
+     * @param sb Solution box que l'on vient de dessiner
+     */
     public void remplirObjet(int index, int xmin, int xmax, int ymin, int ymax, SolutionBox sb){
         JSONObject oJSON = new JSONObject();
         oJSON.put("xmin", xmin);
@@ -189,27 +208,28 @@ public class ResolvePanel extends javax.swing.JPanel {
         String chaineProduit="";
         String puce = new String(Character.toChars(0x2B50)); // logo étoile
         
-        DecimalFormat numberFormat = new DecimalFormat("#.000");
+        DecimalFormat numberFormat = new DecimalFormat("#.000"); // on limite le taux de remplissage à 2 décimales
         
         JSONObject oObjectInTab; // variable qui va contenir l'objet qui se trouve dans chaque index
         int xmin, xmax,ymin,ymax;
         SolutionBox sb;
         int nbProduit=0,i,j=1;
         int key, keyPlusUn;
-        
-        
+        // on parcourt l'objet JSON
         for(Iterator iterator = this.arrayJSONObject.keySet().iterator(); iterator.hasNext();) {
             // on parcourt l'objet
-            key = (int) iterator.next();
-            keyPlusUn=key+1;
+            key = (int) iterator.next(); // on récupère l'index
+            keyPlusUn=key+1; // on stocke index+1 pour l'affichage
             oObjectInTab=(JSONObject)this.arrayJSONObject.get(key); // on recupère l'objet
 
-            ymin=(int)oObjectInTab.get("ymin");
+            // on récupère les caractéristiques stockées
+            ymin=(int)oObjectInTab.get("ymin"); 
             xmin=(int)oObjectInTab.get("xmin");
             ymax=(int)oObjectInTab.get("ymax");
             xmax=(int)oObjectInTab.get("xmax");
             sb=(SolutionBox)oObjectInTab.get("solutionBox");
 
+            // on regarde si le clic est bien sur une box
             if (positionX>=xmin && positionX<=xmax && positionY >=ymin && positionY<=ymax){ // c'est un clic sur une box
                 chaine = puce+puce+"  Informations complémentaire sur la solution box n°"+keyPlusUn+"  "+puce+puce;
                 chaine+="\n--------------------------------------------------------------------------------\n";
